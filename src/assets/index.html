@@ -15,11 +15,8 @@
   </head>
   <body>
     <div id="load-bar"></div>
-    <div id="main" style="opacity:0;"></div>
+    <div id="main"></div>
     <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
-    <script type="text/javascript">
-      !function(){function t(t,n){return i.floor(i.random()*(n-t))+t}function n(){if(d){var o=r-l,i=.01*o,e=.3*o;l+=t(i,e),a.width=l+"px",setTimeout(n,t(300,900))}}var o=document,i=Math,e=window,a=o.getElementById("load-bar").style,d=!0,r=e.innerWidth;e.onload=function(){a.width=r+"px",a.opacity=0,d=!1,o.getElementById("main").style.opacity=1};var l=0;n()}();
-    </script>
   </body>
 </html>
