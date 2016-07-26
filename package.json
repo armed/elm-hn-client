@@ -1,0 +1,32 @@
+{
+  "name": "999dice",
+  "description": "999dice clone",
+  "version": "1.0.0",
+  "author": "Artem Medeusheyev <artem.medeusheyev@voix.io>",
+  "scripts": {
+    "start": "webpack-dev-server --hot --inline --content-base src/",
+    "build": "rimraf dist && webpack",
+    "watch": "webpack --watch"
+  },
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "bootstrap-sass": "latest",
+    "copy-webpack-plugin": "latest",
+    "css-loader": "latest",
+    "elm-hot-loader": "latest",
+    "elm-webpack-loader": "latest",
+    "extract-text-webpack-plugin": "latest",
+    "file-loader": "latest",
+    "html-webpack-plugin": "latest",
+    "node-sass": "latest",
+    "postcss-loader": "latest",
+    "rimraf": "latest",
+    "sass-loader": "latest",
+    "script-loader": "latest",
+    "style-loader": "latest",
+    "url-loader": "latest",
+    "webpack": "latest",
+    "webpack-dev-server": "latest",
+    "webpack-merge": "latest"
+  }
+}

@@ -1,0 +1,33 @@
+.story-list {
+  min-width: 300px;
+  width: 300px;
+  overflow-x: auto;
+
+  .header {
+    @include headerMixin;
+    position: fixed;
+    width: 300px;
+    &:after {
+      content: "Elm HN reader";
+    }
+  }
+
+  .story-link {
+    padding: 5px;
+    margin: 5px;
+    cursor: pointer;
+    border-left: 3px solid $hnbg;
+
+    &:hover {
+      background-color: $hngreybg;
+    }
+
+    &:nth-child(2) {
+      margin-top: 42px;
+    }
+
+    &.opened {
+      border-left-color: $hnorange;
+    }
+  }
+}

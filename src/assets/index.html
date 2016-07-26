@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charSet="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Elm HN Client</title>
+    <meta name="description" content="Hacker News client written in Elm"/>
+    <meta name="author" content="Artem Medeusheyev"/>
+    <link rel="shortcut icon" type="image/png" href="./favicon.ico"/>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+      integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+      crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="load-bar"></div>
+    <div id="main" style="opacity:0;"></div>
+    <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+    <script type="text/javascript">
+      !function(){function t(t,n){return i.floor(i.random()*(n-t))+t}function n(){if(d){var o=r-l,i=.01*o,e=.3*o;l+=t(i,e),a.width=l+"px",setTimeout(n,t(300,900))}}var o=document,i=Math,e=window,a=o.getElementById("load-bar").style,d=!0,r=e.innerWidth;e.onload=function(){a.width=r+"px",a.opacity=0,d=!1,o.getElementById("main").style.opacity=1};var l=0;n()}();
+    </script>
+  </body>
+</html>

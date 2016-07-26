@@ -1,0 +1,19 @@
+@import 'variables';
+@import 'components/story-list';
+@import 'components/story';
+
+html, body, #main {
+  height: 100%;
+  background-color: $hnbg;
+  color: #222;
+}
+
+#main {
+  display: flex;
+
+  .content {
+    display: flex;
+    height: 100%;
+    flex: 1 100%;
+  }
+}

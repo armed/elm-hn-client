@@ -1,0 +1,36 @@
+.comment {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+
+  .comment-header {
+    padding: 4px;
+    background-color: $hngreybg;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0;
+    &:after {
+      font-size: 10px;
+      content: "  \25BC";
+    }
+  }
+
+  .comment-body {
+    margin-bottom: 4px;
+    border-left: 1px solid $hngreybg;
+    padding-left: 4px;
+  }
+
+  input[type="checkbox"]:checked ~ .comment-header:after {
+    content: "  \25B6";
+  }
+
+  input[type="checkbox"]:checked ~ .comment-body,
+  input[type="checkbox"]:checked ~ .comment-kids {
+    display: none;
+  }
+
+  input[type="checkbox"] {
+    display: none;
+  }
+}
