@@ -7,56 +7,53 @@ import Dict exposing (Dict)
 import Model exposing (Item (..), ItemData, itemId, ifFullThen, runWithDefault, isLite)
 
 
-type alias Model = Item
-
-
 type alias Comment = Item
 
 
-type alias IdsPath = List Int
+type alias PathIds = List Int
 
 
-update : Model -> Comment -> IdsPath -> (Model, List Int)
-update model cmt idsPath =
+type alias IdsToFetch = List Int
+
+
+update : Comment -> Comment -> PathIds -> (Comment, IdsToFetch)
+update oldComment newComment pathIds =
   let
-    updateKids id kids idsPath' =
-      Dict.update id (updateKid idsPath') kids
-
-    updateKid idsPath' mbKid =
-      case mbKid of
-        Just (index, kid) ->
-          Just <| (index, update' kid cmt <| List.drop 1 idsPath')
-
-        _ ->
-          Nothing
-
-    update' model' cmt' idsPath' =
-      let
-        _ = Debug.log "model and idsPath" (model', idsPath')
-      in
-        case List.head idsPath' of
-          Just id ->
-            model' `ifFullThen` (\data ->
-              { data
-              | kids = updateKids id data.kids idsPath'
-              } |> Full
-              )
-
-          _ ->
-            cmt'
-
-    idsToLoad data =
+    idsToFetch data =
       Dict.values data.kids
         |> List.map snd
         |> List.filter isLite
         |> List.map itemId
   in
-    ( update' model cmt idsPath
-    , runWithDefault cmt idsToLoad []
+    ( updateComment oldComment newComment pathIds
+    , runWithDefault newComment idsToFetch []
     )
 
 
-comment : Model -> Html a
+updateComment oldComment newComment pathIds =
+  case List.head pathIds of
+    Just id ->
+      oldComment `ifFullThen` (\data ->
+        Full <|
+          { data
+          | kids = Dict.update id (updateInDict pathIds newComment) data.kids
+          }
+      )
+
+    _ ->
+      newComment
+
+
+updateInDict pathIds newComment mbOldComment =
+  case mbOldComment of
+    Just (index, oldComment) ->
+      Just <| (index, updateComment oldComment newComment <| List.drop 1 pathIds)
+
+    _ ->
+      Nothing
+
+
+comment : Comment -> Html a
 comment cmt =
   let
     cbId data =
@@ -84,7 +81,7 @@ comment cmt =
       comment'
 
 
-comments : Dict Int (Int, Model) -> List (Html a)
+comments : Dict Int (Int, Comment) -> List (Html a)
 comments commentsData =
   Dict.values commentsData
     |> List.sortBy fst

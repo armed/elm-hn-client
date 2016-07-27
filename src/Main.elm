@@ -28,8 +28,8 @@ import Maybe exposing (andThen)
 
 main : Program Never
 main =
-  App.program
-  -- TimeTravel.Html.App.program
+  -- App.program
+  TimeTravel.Html.App.program
     { init = init
     , update = update
     , subscriptions = subscriptions
@@ -58,7 +58,6 @@ type Msg
   | ItemLoadError String
   | OpenStory StoryLink.Msg
   | CloseStory Story.Msg
-  | CommentsLoad (List Item)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -68,7 +67,7 @@ update msg model =
       { model | stories = list }
         ! reverseMap (itemId >> (\i -> [i]) >> getItemData) list
 
-    ItemLoad idsPath item ->
+    ItemLoad pathIds item ->
       case model.openedStory of
         Nothing ->
           updateStoryList model item
@@ -76,11 +75,11 @@ update msg model =
         Just story ->
           let
             (updatedStory, idsToLoad) =
-              Comment.update story item <| List.drop 1 idsPath
+              Comment.update story item <| List.drop 1 pathIds
           in
             { model
             | openedStory = Just updatedStory }
-              ! List.map ((\i -> idsPath ++ [i]) >> getItemData) idsToLoad
+              ! List.map ((\i -> pathIds ++ [i]) >> getItemData) idsToLoad
 
     ItemLoadError msg ->
       let
@@ -100,8 +99,6 @@ update msg model =
       { model | openedStory = Nothing }
         ! []
 
-    _ ->
-      (model, Cmd.none)
 
 reverseMap : (b -> Cmd a) -> List b -> List (Cmd a)
 reverseMap func list =
@@ -123,11 +120,11 @@ loadComments mbStory =
 
 
 commentsCmds : List Int -> Item -> List (Cmd Msg)
-commentsCmds idsPath item =
+commentsCmds pathIds item =
   case Debug.log "item" item of
     Full itemData ->
       Dict.keys itemData.kids
-        |> List.map ((\i -> idsPath ++ [i]) >> getItemData)
+        |> List.map ((\i -> pathIds ++ [i]) >> getItemData)
 
     _ ->
       []
@@ -172,14 +169,14 @@ subscriptions model =
     parseItemListJson list =
       ItemIdsLoad <| List.map Lite list
 
-    parseItemDataJson (idsPath, json) =
+    parseItemDataJson (pathIds, json) =
       Json.decodeValue Decode.item json
-        |> resultToMsg idsPath
+        |> resultToMsg pathIds
 
-    resultToMsg idsPath result =
+    resultToMsg pathIds result =
       case result of
         Result.Ok item ->
-          ItemLoad idsPath item
+          ItemLoad pathIds item
 
         Result.Err msg ->
           ItemLoadError msg
