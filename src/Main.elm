@@ -18,7 +18,6 @@ import Components.Story as Story
 import Json.Decode as Json
 import Decode
 import String
-import TimeTravel.Html.App
 import Dict
 import Maybe exposing (andThen)
 
@@ -28,8 +27,7 @@ import Maybe exposing (andThen)
 
 main : Program Never
 main =
-  -- App.program
-  TimeTravel.Html.App.program
+  App.program
     { init = init
     , update = update
     , subscriptions = subscriptions
