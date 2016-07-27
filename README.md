@@ -5,7 +5,7 @@ Still work in progress project.
 To run:
 
 ```
-$ elm package install
-$ npm install
-$ npm start
+elm package install
+npm install
+npm start
 ```
