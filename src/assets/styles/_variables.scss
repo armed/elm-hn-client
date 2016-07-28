@@ -1,6 +1,6 @@
 $hnorange: #ff6600;
 $hngreybg: #dad0c1;
-$hnbg: #fff3e2;
+$hnbg: #fff9f1;
 
 @mixin headerMixin {
   height: 40px;
@@ -10,4 +10,5 @@ $hnbg: #fff3e2;
   text-align: center;
   background-color: $hnorange;
   color: white;
+  line-height: 2;
 }
