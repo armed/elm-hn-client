@@ -1,7 +1,7 @@
 module Components.StoryLink exposing (view, Msg (..))
 
-import Html exposing (Html, div, text)
-import Html.Attributes exposing (id, class)
+import Html exposing (Html, div, text, a)
+import Html.Attributes exposing (id, class, href, target)
 import Html.Events exposing (onClick)
 import Model exposing (Item (..), ItemData, itemId)
 
@@ -46,9 +46,14 @@ storyView storyData active =
           else
             ""
   in
-    div [ class clz, onClick (Open storyData.id) ]
-      [ div [ class "story-title" ]
-          [ text storyData.title ]
+    div [ class clz ]
+      [ div [ class "story-title", onClick (Open storyData.id) ]
+          [ div [ class "title-text" ] [ text storyData.title ]
+          , div [ class "url" ]
+              [ a [ href storyData.url, target "_blank" ]
+                  [ text storyData.url ]
+              ]
+          ]
       , div [ class "story-info" ]
           [ div [ class "story-score" ]
               [ text <| toString storyData.score ]

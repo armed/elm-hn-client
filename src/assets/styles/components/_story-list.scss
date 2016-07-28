@@ -18,7 +18,6 @@
     display: flex;
     justify-content: space-between;
     padding: 10px 5px 10px 5px;
-    cursor: pointer;
     color: grey;
     border-left: 3px solid $hnbg;
     border-bottom: 1px solid #ddd;
@@ -33,12 +32,38 @@
     }
 
     &.opened {
-      color: #333;
+      color: $hoverColor;
       border-left-color: $hnorange;
     }
 
     .story-title {
+      display: flex;
+      flex-direction: column;
 
+      .title-text {
+        cursor: pointer;
+        &:hover {
+          color: $hoverColor;
+        }
+      }
+
+      .url {
+        cursor: pointer;
+        margin-top: 4px;
+        font-size: 10px;
+        text-overflow: ellipsis;
+        max-width: 240px;
+        white-space: nowrap;
+        overflow: hidden;
+
+        a {
+          text-decoration: none;
+          color: grey;
+          &:hover {
+            color: $hoverColor;
+          }
+        }
+      }
     }
 
     .story-info {
