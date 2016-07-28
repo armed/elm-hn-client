@@ -31,8 +31,7 @@ isActive story mbOpenedStory =
 
 placeholderView : Html a
 placeholderView =
-  div [ class "story-link" ]
-    [ text "....." ]
+  div [ class "story-link" ] []
 
 
 storyView : ItemData -> Bool -> Html Msg
@@ -48,4 +47,12 @@ storyView storyData active =
             ""
   in
     div [ class clz, onClick (Open storyData.id) ]
-      [ text storyData.title ]
+      [ div [ class "story-title" ]
+          [ text storyData.title ]
+      , div [ class "story-info" ]
+          [ div [ class "story-score" ]
+              [ text <| toString storyData.score ]
+          , div [ class "story-comments" ]
+              [ text <| toString storyData.descendants ]
+          ]
+      ]

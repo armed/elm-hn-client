@@ -2,32 +2,71 @@
   min-width: 300px;
   width: 300px;
   overflow-x: auto;
+  padding-right: 10px;
 
   .header {
     @include headerMixin;
     position: fixed;
     width: 300px;
+    max-width: 300px;
     &:after {
       content: "Elm HN reader";
     }
   }
 
   .story-link {
-    padding: 5px;
-    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 5px 10px 5px;
     cursor: pointer;
+    color: grey;
     border-left: 3px solid $hnbg;
+    border-bottom: 1px solid #ddd;
 
     &:hover {
       background-color: $hngreybg;
+      border-left-color:  $hngreybg;
     }
 
     &:nth-child(2) {
-      margin-top: 42px;
+      margin-top: 62px;
     }
 
     &.opened {
+      color: #333;
       border-left-color: $hnorange;
+    }
+
+    .story-title {
+
+    }
+
+    .story-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      color: #777;
+      margin-left: 3px;
+      font-size: 11px;
+
+      @mixin infoIcon($code) {
+        margin-top: 3px;
+        &:before {
+          color: #bbb;
+          font-family: 'FortAwesome';
+          padding-right: 2px;
+          content: $code;
+        }
+      }
+
+      .story-score {
+        @include infoIcon('\f001')
+      }
+
+      .story-comments {
+        @include infoIcon('\f000');
+      }
     }
   }
 }
