@@ -4,25 +4,38 @@
   margin-left: 10px;
 
   .comment-header {
+    display: flex;
     padding: 4px;
-    background-color: $hngreybg;
     cursor: pointer;
     width: 100%;
     margin-bottom: 0;
-    &:after {
+    color: grey;
+
+    .nickname {
+      font-weight: normal;
+    }
+
+    .arrow {
+      margin-right: 5px;
+      padding-top: 2px;
+      width: 20px;
+      height: 20px;
       font-size: 10px;
-      content: "  \25BC";
+      font-family: monospace;
+      text-align: center;
+      &:before {
+        content: "[-]";
+      }
     }
   }
 
   .comment-body {
     margin-bottom: 4px;
-    border-left: 1px solid $hngreybg;
     padding-left: 4px;
   }
 
-  input[type="checkbox"]:checked ~ .comment-header:after {
-    content: "  \25B6";
+  input[type="checkbox"]:checked ~ .comment-header > .arrow:before {
+    content: "[+]";
   }
 
   input[type="checkbox"]:checked ~ .comment-body,

@@ -67,7 +67,10 @@ comment cmt =
         Full data ->
           [ input [ id <| cbId data, type' "checkbox" ] []
           , label [ class "comment-header", for <| cbId data ]
-              [ text <| mwd data.by ]
+              [ div [ class "arrow" ] []
+              , div [ class "nickname"]
+                  [ text <| mwd data.by ]
+              ]
           , div [ class "comment-body", innerHtml data.text ]
               []
           , div [ class "comment-kids" ]
