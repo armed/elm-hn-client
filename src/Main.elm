@@ -200,8 +200,8 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   div [ class "content" ]
-    [ storyList model
-    , Story.view model.openedStory
+    [ Story.view model.openedStory
+    , storyList model
     ]
 
 

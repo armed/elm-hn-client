@@ -6,6 +6,10 @@
   flex-direction: column;
   flex-grow: 1;
 
+  &:empty {
+    display: none;
+  }
+
   .story-title {
     @include headerMixin;
   }

@@ -16,6 +16,7 @@ html, body, #main {
 
   .content {
     display: flex;
+    flex-flow: row-reverse;
     height: 100%;
     flex: 1 100%;
   }
