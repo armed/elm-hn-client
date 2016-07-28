@@ -50,7 +50,7 @@
       .url {
         cursor: pointer;
         margin-top: 4px;
-        font-size: 10px;
+        font-size: .7em;
         text-overflow: ellipsis;
         max-width: 240px;
         white-space: nowrap;
@@ -73,7 +73,7 @@
       align-items: flex-end;
       color: #777;
       margin-left: 3px;
-      font-size: 11px;
+      font-size: .75em;
 
       @mixin infoIcon($code) {
         margin-top: 3px;
