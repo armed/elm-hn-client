@@ -89,12 +89,12 @@ comments commentsData =
   Dict.values commentsData
     |> List.sortBy fst
     |> List.map snd
-    |> List.filter deletedFilter
+    |> List.filter dropDeleted
     |> List.map comment
 
 
-deletedFilter : Item -> Bool
-deletedFilter cmt =
+dropDeleted : Item -> Bool
+dropDeleted cmt =
   case cmt of
     Full data ->
       not data.deleted
