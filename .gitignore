@@ -1,5 +1,6 @@
 .*
 !.gitignore
-node_modules
+node_modules/
+dist/
 elm-stuff
 *.log
