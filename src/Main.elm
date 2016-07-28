@@ -11,6 +11,7 @@ import Model exposing
   , StoryFilter (..)
   , ifFullThen
   , runWithDefault
+  , isFull
   )
 import Components.Comment as Comment
 import Components.StoryLink as StoryLink
@@ -19,7 +20,6 @@ import Json.Decode as Json
 import Decode
 import String
 import Dict
-import Maybe exposing (andThen)
 
 
 -- APP
@@ -55,7 +55,6 @@ type Msg
   | ItemLoad (List Int) Item
   | ItemLoadError String
   | OpenStory StoryLink.Msg
-  | CloseStory Story.Msg
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -66,18 +65,15 @@ update msg model =
         ! reverseMap (itemId >> (\i -> [i]) >> getItemData) list
 
     ItemLoad pathIds item ->
-      case model.openedStory of
-        Nothing ->
-          updateStoryList model item
+      if List.length pathIds > 1 then
+        case model.openedStory of
+          Just story ->
+            updateOpenedStory model story pathIds item
 
-        Just story ->
-          let
-            (updatedStory, idsToLoad) =
-              Comment.update story item <| List.drop 1 pathIds
-          in
-            { model
-            | openedStory = Just updatedStory }
-              ! List.map ((\i -> pathIds ++ [i]) >> getItemData) idsToLoad
+          Nothing ->
+            model ! []
+      else
+        updateStoryList model item
 
     ItemLoadError msg ->
       let
@@ -93,9 +89,22 @@ update msg model =
             ! (loadComments mbStory)
         )
 
-    CloseStory _ ->
-      { model | openedStory = Nothing }
-        ! []
+
+updateOpenedStory : Model -> Item -> List Int -> Item -> (Model, Cmd Msg)
+updateOpenedStory model oldStory pathIds newStory =
+  let
+    rootId = Maybe.withDefault -1 (List.head pathIds)
+  in
+    if itemId oldStory == rootId then
+      let
+        (updatedStory, idsToLoad) =
+          Comment.update oldStory newStory <| List.drop 1 pathIds
+      in
+        { model
+        | openedStory = Just updatedStory }
+          ! List.map ((\i -> pathIds ++ [i]) >> getItemData) idsToLoad
+    else
+      model ! []
 
 
 reverseMap : (b -> Cmd a) -> List b -> List (Cmd a)
@@ -192,7 +201,7 @@ view : Model -> Html Msg
 view model =
   div [ class "content" ]
     [ storyList model
-    , Story.view model.openedStory |> App.map CloseStory
+    , Story.view model.openedStory
     ]
 
 
@@ -201,8 +210,11 @@ storyList { stories, openedStory } =
   let
     storyLink story =
       StoryLink.view story openedStory
+
+    stories' =
+      List.filter isFull stories
   in
     div [ class "story-list" ]
       (div [ class "header" ] []
-        :: List.map (storyLink >> App.map OpenStory) stories
+        :: List.map (storyLink >> App.map OpenStory) stories'
       )

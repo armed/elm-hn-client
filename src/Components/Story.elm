@@ -8,10 +8,7 @@ import Model exposing (Item (..), ItemData, runWithDefault)
 import Components.Comment as Comment exposing (comments)
 
 
-type Msg = GoBack
-
-
-view : Maybe Item -> Html Msg
+view : Maybe Item -> Html a
 view mbStory =
   let
     renderStory mbStory =
@@ -30,9 +27,9 @@ emptyStory =
   []
 
 
-fullStory : ItemData -> List (Html Msg)
+fullStory : ItemData -> List (Html a)
 fullStory story =
-  [ div [ class "story-title", onClick GoBack ]
+  [ div [ class "story-title" ]
       [ text story.title ]
   , div [ class "story-body" ]
       [ div [ class "story-text", innerHtml story.text ] []
