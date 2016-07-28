@@ -1,7 +1,6 @@
 .comment {
   margin-top: 5px;
   margin-bottom: 5px;
-  margin-left: 10px;
 
   .comment-header {
     display: flex;
@@ -32,6 +31,10 @@
   .comment-body {
     margin-bottom: 4px;
     padding-left: 4px;
+  }
+
+  .comment-kids {
+    margin-left: 20px;
   }
 
   input[type="checkbox"]:checked ~ .comment-header > .arrow:before {
