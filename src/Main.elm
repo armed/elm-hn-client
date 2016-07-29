@@ -55,21 +55,23 @@ view : Model -> Html Msg
 view model =
   div [ class "content" ]
     [ Story.view model.openedStory
-    , storyList model
+    , storyLinks model
     , forkMeOnGithub
     ]
 
 
-storyList : Model -> Html Msg
-storyList { stories, openedStory } =
+storyLinks : Model -> Html Msg
+storyLinks { stories, openedStory } =
   let
     storyLink story =
-      StoryLink.view story openedStory
+      App.map OpenStory <| StoryLink.view story openedStory
 
-    stories' =
+    storiesWithData =
       List.filter isFull stories
+
+    header = div [ class "header" ] []
+
+    links = List.map storyLink storiesWithData
   in
     div [ class "story-list" ]
-      (div [ class "header" ] []
-        :: List.map (storyLink >> App.map OpenStory) stories'
-      )
+      (header :: links)
