@@ -13,6 +13,7 @@ import Model exposing
   , runWithDefault
   , isFull
   )
+import Keyboard
 import Components.Comment as Comment
 import Components.StoryLink as StoryLink
 import Components.Story as Story
@@ -51,18 +52,20 @@ init =
 
 
 type Msg
-  = ItemIdsLoad (List Item)
+  = ItemIdsLoad (List Int)
   | ItemLoad (List Int) Item
   | ItemLoadError String
   | OpenStory StoryLink.Msg
+  | CloseStory
+  | EmptyMsg
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ItemIdsLoad list ->
-      { model | stories = list }
-        ! reverseMap (itemId >> (\i -> [i]) >> getItemData) list
+      { model | stories = List.map Lite list  }
+        ! (itemDataCmds [] list)
 
     ItemLoad pathIds item ->
       if List.length pathIds > 1 then
@@ -89,6 +92,13 @@ update msg model =
             ! (loadComments mbStory)
         )
 
+    CloseStory ->
+      { model | openedStory = Nothing }
+        ! []
+
+    EmptyMsg ->
+      (model, Cmd.none)
+
 
 updateOpenedStory : Model -> Item -> List Int -> Item -> (Model, Cmd Msg)
 updateOpenedStory model oldStory pathIds newStory =
@@ -100,38 +110,31 @@ updateOpenedStory model oldStory pathIds newStory =
         (updatedStory, idsToLoad) =
           Comment.update oldStory newStory <| List.drop 1 pathIds
       in
-        { model
-        | openedStory = Just updatedStory }
-          ! List.map ((\i -> pathIds ++ [i]) >> getItemData) idsToLoad
+        { model | openedStory = Just updatedStory }
+          ! itemDataCmds pathIds idsToLoad
     else
       model ! []
 
 
-reverseMap : (b -> Cmd a) -> List b -> List (Cmd a)
-reverseMap func list =
-  List.reverse list
-    |> List.map func
-
-
 loadComments : Maybe Item -> List (Cmd msg)
 loadComments mbStory =
-  case mbStory of
-    Just story ->
-      runWithDefault story (\data ->
-        Dict.keys data.kids
-          |> List.map ((\i ->  [ data.id, i ]) >> getItemData)
-      ) []
+  let
+    cmdMaker data =
+      itemDataCmds [ data.id ] <| Dict.keys data.kids
+  in
+    case mbStory of
+      Just story ->
+        runWithDefault story cmdMaker []
 
-    Nothing ->
-      []
+      Nothing ->
+        []
 
 
 commentsCmds : List Int -> Item -> List (Cmd Msg)
 commentsCmds pathIds item =
   case Debug.log "item" item of
     Full itemData ->
-      Dict.keys itemData.kids
-        |> List.map ((\i -> pathIds ++ [i]) >> getItemData)
+      itemDataCmds pathIds <| Dict.keys itemData.kids
 
     _ ->
       []
@@ -155,6 +158,16 @@ updateStoryInList updatedItem listOfItems =
     List.map mapper listOfItems
 
 
+itemDataCmds : List Int -> List Int -> List (Cmd msg)
+itemDataCmds pathIds list =
+  List.map (appendTo pathIds >> getItemData) list
+
+
+appendTo : List Int -> Int -> List Int
+appendTo pathIds i =
+  pathIds ++ [i]
+
+
 -- SUBSCRIPTIONS
 
 
@@ -174,7 +187,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   let
     parseItemListJson list =
-      ItemIdsLoad <| List.map Lite list
+      ItemIdsLoad <| List.reverse list
 
     parseItemDataJson (pathIds, json) =
       Json.decodeValue Decode.item json
@@ -187,10 +200,17 @@ subscriptions model =
 
         Result.Err msg ->
           ItemLoadError msg
+
+    handleEscKey keyCode =
+      if (Debug.log "keyCode" keyCode) == 27 then
+        CloseStory
+      else
+        EmptyMsg
   in
     Sub.batch
       [ itemIds parseItemListJson
       , itemData parseItemDataJson
+      , Keyboard.ups handleEscKey
       ]
 
 

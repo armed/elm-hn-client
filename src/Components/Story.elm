@@ -3,7 +3,6 @@ module Components.Story exposing (..)
 import Html exposing (Html, div, h4, text)
 import Html.Attributes exposing (id, class)
 import Html.Attributes.Extra exposing (innerHtml)
-import Html.Events exposing (onClick)
 import Model exposing (Item (..), ItemData, runWithDefault)
 import Components.Comment as Comment exposing (comments)
 

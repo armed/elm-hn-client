@@ -30,6 +30,7 @@ update oldComment newComment pathIds =
     )
 
 
+updateComment : Item -> Item -> List Int -> Item
 updateComment oldComment newComment pathIds =
   case List.head pathIds of
     Just id ->
@@ -44,6 +45,7 @@ updateComment oldComment newComment pathIds =
       newComment
 
 
+updateInDict : List Int -> Item -> Maybe (Int, Item) -> Maybe (Int, Item)
 updateInDict pathIds newComment mbOldComment =
   case mbOldComment of
     Just (index, oldComment) ->
