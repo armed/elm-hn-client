@@ -1,7 +1,8 @@
 .story-list {
   min-width: 300px;
   width: 300px;
-  overflow-x: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 10px;
 
   .header {
@@ -15,19 +16,20 @@
   }
 
   .story:empty ~ & {
-    width: 60%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 50px;
+    max-height: 95%;
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 5%;
     overflow: auto;
     font-size: 1.3em;
 
     & > .header {
-      width: 100%;
-      max-width: 100%;
-      position: absolute;
       top: 0;
       left: 0;
+      right: 0;
+      max-width: none;
+      width: auto;
       line-height: 1.5;
     }
   }

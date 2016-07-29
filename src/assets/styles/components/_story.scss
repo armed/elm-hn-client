@@ -16,7 +16,8 @@
 
   .story-body {
     flex-grow: 1;
-    overflow-x: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .story-text {
       margin-top: 70px;
