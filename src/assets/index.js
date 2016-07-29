@@ -6,7 +6,7 @@ var config = {
 
 var fireApp = firebase.initializeApp(config);
 var Elm = require('../Main');
-var app = Elm.Main.embed(document.getElementById('main'));
+var app = Elm.Main.fullscreen();
 
 app.ports.getItemIds.subscribe(function (filter) {
   fireApp

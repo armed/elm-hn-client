@@ -5,13 +5,13 @@
 @import 'components/story-list';
 @import 'components/story';
 
-html, body, #main {
+html, body {
   height: 100%;
   background-color: $hnbg;
   color: #222;
 }
 
-#main {
+body {
   display: flex;
 
   .content {
