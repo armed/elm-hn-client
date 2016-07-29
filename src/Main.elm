@@ -17,6 +17,7 @@ import Keyboard
 import Components.Comment as Comment
 import Components.StoryLink as StoryLink
 import Components.Story as Story
+import Components.ForkMeOnGithub exposing (forkMeOnGithub)
 import Json.Decode as Json
 import Decode
 import String
@@ -222,6 +223,7 @@ view model =
   div [ class "content" ]
     [ Story.view model.openedStory
     , storyList model
+    , forkMeOnGithub
     ]
 
 
