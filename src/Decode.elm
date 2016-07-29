@@ -1,5 +1,6 @@
 module Decode exposing (..)
 
+-- vendor
 import Json.Decode.Extra exposing ((|:), lazy)
 import Json.Decode as Json exposing
   ( Decoder
@@ -18,8 +19,10 @@ import Json.Decode as Json exposing
   , value
   , decodeValue
   )
-import Model exposing (..)
 import Dict exposing (Dict)
+
+-- local
+import Model exposing (..)
 
 
 items : Decoder (List Item)

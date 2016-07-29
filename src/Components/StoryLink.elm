@@ -1,8 +1,11 @@
 module Components.StoryLink exposing (view, Msg (..))
 
+-- vendor
 import Html exposing (Html, div, text, a)
 import Html.Attributes exposing (id, class, href, target)
 import Html.Events exposing (onClick)
+
+-- local
 import Model exposing (Item (..), ItemData, itemId)
 
 

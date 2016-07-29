@@ -18,7 +18,7 @@ import Components.ForkMeOnGithub exposing (forkMeOnGithub)
 import Subscriptions exposing (subscriptions)
 import Msg exposing (Msg (..))
 import Update exposing (update)
-import Ports exposing (getItemIds)
+import Ports
 
 
 -- APP
@@ -43,7 +43,8 @@ init =
     defaultFilter = TopStories
   in
     Model defaultFilter [] Nothing 0
-      ! [ getItemIds <| String.toLower <| toString defaultFilter
+      ! [ Task.perform UnexpectedError CurrentTime Time.now
+        , Ports.getItemIds <| String.toLower <| toString defaultFilter
         ]
 
 

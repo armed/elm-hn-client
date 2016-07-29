@@ -1,5 +1,6 @@
 module Components.ForkMeOnGithub exposing (forkMeOnGithub)
 
+-- vendor
 import Html exposing (Html, a, div, text)
 import Html.Attributes exposing (class, href, title, target)
 

@@ -1,9 +1,12 @@
 module Components.Comment exposing (..)
 
+-- vendor
 import Html exposing (Html, div, text, label, input)
 import Html.Attributes exposing (id, class, attribute, for, type')
 import Html.Attributes.Extra exposing (innerHtml)
 import Dict exposing (Dict)
+
+-- local
 import Model exposing (Item (..), ItemData, itemId, ifFullThen, runWithDefault, isLite)
 
 

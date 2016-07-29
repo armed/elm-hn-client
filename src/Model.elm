@@ -1,5 +1,6 @@
 module Model exposing (..)
 
+-- vendor
 import Dict exposing (Dict)
 
 

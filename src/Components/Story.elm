@@ -1,8 +1,11 @@
 module Components.Story exposing (..)
 
+-- vendor
 import Html exposing (Html, div, h4, text)
 import Html.Attributes exposing (id, class)
 import Html.Attributes.Extra exposing (innerHtml)
+
+-- local
 import Model exposing (Item (..), ItemData, runWithDefault)
 import Components.Comment as Comment exposing (comments)
 

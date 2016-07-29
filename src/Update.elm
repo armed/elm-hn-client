@@ -16,7 +16,7 @@ update msg model =
   case msg of
     ItemIdsLoad list ->
       { model | stories = List.map Lite list  }
-        ! (itemDataCmds [] list)
+        ! (itemDataRequestCmds [] list)
 
     ItemLoad pathIds item ->
       if List.length pathIds > 1 then
@@ -30,10 +30,8 @@ update msg model =
         updateStoryList model item
 
     UnexpectedError msg ->
-      let
-        _ = Debug.log "err msg" msg
-      in
-        (model, Cmd.none)
+      -- will handle someday
+      (model, Cmd.none)
 
     OpenStory (StoryLink.Open id) ->
       List.filter (\s -> itemId s == id) model.stories
@@ -48,7 +46,7 @@ update msg model =
         ! []
 
     CurrentTime time ->
-      { model | currentTime = Debug.log "time" time }
+      { model | currentTime = time }
         ! []
 
     EmptyMsg ->
@@ -66,7 +64,7 @@ updateOpenedStory model oldStory pathIds newStory =
           Comment.update oldStory newStory <| List.drop 1 pathIds
       in
         { model | openedStory = Just updatedStory }
-          ! itemDataCmds pathIds idsToLoad
+          ! itemDataRequestCmds pathIds idsToLoad
     else
       model ! []
 
@@ -75,7 +73,7 @@ loadComments : Maybe Item -> List (Cmd Msg)
 loadComments mbStory =
   let
     cmdMaker data =
-      itemDataCmds [ data.id ] <| Dict.keys data.kids
+      itemDataRequestCmds [ data.id ] <| Dict.keys data.kids
   in
     case mbStory of
       Just story ->
@@ -103,8 +101,8 @@ updateStoryInList updatedItem listOfItems =
     List.map mapper listOfItems
 
 
-itemDataCmds : List Int -> List Int -> List (Cmd Msg)
-itemDataCmds pathIds list =
+itemDataRequestCmds : List Int -> List Int -> List (Cmd Msg)
+itemDataRequestCmds pathIds list =
   List.map (appendTo pathIds >> getItemData) list
 
 
