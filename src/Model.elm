@@ -7,6 +7,7 @@ type alias Model =
   { filter: StoryFilter
   , stories: List Item
   , openedStory: Maybe Item
+  , currentTime: Float
   }
 
 
@@ -21,6 +22,32 @@ type StoryFilter
 type Item
   = Lite Int
   | Full ItemData
+
+
+type alias ItemData =
+  { id: Int
+  , deleted: Bool
+  , kind: ItemType
+  , by: Maybe String
+  , time: Int
+  , text: String
+  , parent: Maybe Item
+  , kids: Dict Int (Int, Item)
+  , url: String
+  , score: Int
+  , title: String
+  , parts: Dict Int (Int, Item)
+  , descendants: Int
+  }
+
+
+type ItemType
+  = Job
+  | Story
+  | Comment
+  | Poll
+  | Pollopt
+  | Unknown
 
 
 isFull : Item -> Bool
@@ -63,29 +90,3 @@ runWithDefault item func default =
 
     _ ->
       default
-
-
-type alias ItemData =
-  { id: Int
-  , deleted: Bool
-  , kind: ItemType
-  , by: Maybe String
-  , time: Int
-  , text: String
-  , parent: Maybe Item
-  , kids: Dict Int (Int, Item)
-  , url: String
-  , score: Int
-  , title: String
-  , parts: Dict Int (Int, Item)
-  , descendants: Int
-  }
-
-
-type ItemType
-  = Job
-  | Story
-  | Comment
-  | Poll
-  | Pollopt
-  | Unknown
