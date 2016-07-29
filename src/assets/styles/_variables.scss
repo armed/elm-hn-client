@@ -3,13 +3,16 @@ $hngreybg: #dad0c1;
 $hnbg: #fff9f1;
 $hoverColor: #333;
 
-@mixin headerMixin {
+@mixin headerMixin($size) {
   height: 40px;
   min-height: 40px;
   padding: 6px;
-  font-size: 1.5em;
+  font-size: $size;
   text-align: center;
   background-color: $hnorange;
   color: white;
-  line-height: 2;
+  display: flex;
+  line-height: normal;
+  justify-content: center;
+  align-items: center;
 }

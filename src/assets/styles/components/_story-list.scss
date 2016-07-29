@@ -6,7 +6,7 @@
   padding-right: 10px;
 
   .header {
-    @include headerMixin;
+    @include headerMixin(1.5em);
     position: fixed;
     width: 300px;
     max-width: 300px;

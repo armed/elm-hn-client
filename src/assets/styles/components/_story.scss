@@ -11,7 +11,7 @@
   }
 
   .story-title {
-    @include headerMixin;
+    @include headerMixin(1.2em);
   }
 
   .story-body {
