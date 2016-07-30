@@ -26,7 +26,7 @@ view mbStory =
   div [ class <| "header" ++ clz ]
     [ githubLink
     , span [ class "logo" ] []
-    , span [ class "back-btn", onClick CloseStory ] []
+    , a [ href "#", class "back-btn", onClick CloseStory ] []
     , div [ class "title" ]
         [ text titleText ]
     ]
