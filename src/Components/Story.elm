@@ -3,21 +3,21 @@ module Components.Story exposing (..)
 -- vendor
 import Html exposing (Html, div, h4, text)
 import Html.Attributes exposing (id, class)
-import Html.Events exposing (onClick)
 import Html.Attributes.Extra exposing (innerHtml)
+import Date exposing (Date)
 
 -- local
 import Model exposing (Item (..), ItemData, runWithDefault)
 import Components.Comment as Comment exposing (comments)
 
 
-view : Maybe Item -> Html a
-view mbStory =
+view : Maybe Item -> Date -> Html a
+view mbStory currentDate =
   let
     renderStory mbStory =
       case mbStory of
         Just storyItem ->
-          runWithDefault storyItem fullStory emptyStory
+          runWithDefault storyItem (fullStory currentDate) emptyStory
 
         Nothing ->
           emptyStory
@@ -30,11 +30,11 @@ emptyStory =
   []
 
 
-fullStory : ItemData -> List (Html a)
-fullStory story =
+fullStory : Date -> ItemData -> List (Html a)
+fullStory currentDate story =
   [ div [ class "story-body" ]
       [ div [ class "story-text", innerHtml story.text ] []
       , div [ class "story-comments" ]
-          <| comments story.kids
+          <| comments currentDate story.kids
       ]
   ]

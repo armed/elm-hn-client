@@ -3,6 +3,7 @@ module Msg exposing (..)
 -- local
 import Components.StoryLink as StoryLink
 import Model exposing (Item)
+import Date exposing (Date)
 
 
 type Msg
@@ -11,5 +12,5 @@ type Msg
   | UnexpectedError String
   | OpenStory StoryLink.Msg
   | CloseStory
-  | CurrentTime Float
+  | CurrentTime Date
   | EmptyMsg

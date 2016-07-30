@@ -2,13 +2,14 @@ module Model exposing (..)
 
 -- vendor
 import Dict exposing (Dict)
+import Date exposing (Date)
 
 
 type alias Model =
   { filter: StoryFilter
   , stories: List Item
   , openedStory: Maybe Item
-  , currentTime: Float
+  , currentTime: Date
   }
 
 

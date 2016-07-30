@@ -4,6 +4,7 @@ module Subscriptions exposing (..)
 import Json.Decode as Json
 import Time
 import Keyboard
+import Date
 
 -- local
 import Model exposing (Model)
@@ -27,13 +28,13 @@ subscriptions model =
       [ itemIds parseItemListJson
       , itemData parseItemDataJson
       , Keyboard.ups handleEscKey
-      , Time.every tenSeconds CurrentTime
+      , Time.every tenSeconds (Date.fromTime >> CurrentTime)
       ]
 
 
 parseItemListJson : List Int -> Msg
 parseItemListJson list =
-  ItemIdsLoad <| List.reverse list
+  ItemIdsLoad list
 
 
 parseItemDataJson : (List Int, Json.Value) -> Msg

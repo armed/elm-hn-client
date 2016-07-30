@@ -2,15 +2,12 @@
 import Html exposing (Html, div, text, h3)
 import Html.Attributes exposing (class)
 import Html.App as App
-import Json.Decode as Json
 import String
-import Dict
 import Time
 import Task
-import Keyboard
+import Date
 
 -- local
-import Decode
 import Model exposing (Model, StoryFilter (..), isFull)
 import Components.Story as Story
 import Components.Header as Header
@@ -41,9 +38,10 @@ init : (Model, Cmd Msg)
 init =
   let
     defaultFilter = TopStories
+    defaultDate = Date.fromTime 0
   in
-    Model defaultFilter [] Nothing 0
-      ! [ Task.perform UnexpectedError CurrentTime Time.now
+    Model defaultFilter [] Nothing defaultDate
+      ! [ Task.perform UnexpectedError (Date.fromTime >> CurrentTime) Time.now
         , Ports.getItemIds <| String.toLower <| toString defaultFilter
         ]
 
@@ -55,16 +53,16 @@ view : Model -> Html Msg
 view model =
   div [ class "content" ]
     [ Header.view model.openedStory
-    , Story.view model.openedStory
+    , Story.view model.openedStory model.currentTime
     , storyLinks model
     ]
 
 
 storyLinks : Model -> Html Msg
-storyLinks { stories, openedStory } =
+storyLinks { stories, openedStory, currentTime } =
   let
     storyLink story =
-      App.map OpenStory <| StoryLink.view story openedStory
+      App.map OpenStory <| StoryLink.view story currentTime openedStory
 
     storiesWithData =
       List.filter isFull stories

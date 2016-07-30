@@ -5,9 +5,11 @@ import Html exposing (Html, div, text, label, input)
 import Html.Attributes exposing (id, class, attribute, for, type')
 import Html.Attributes.Extra exposing (innerHtml)
 import Dict exposing (Dict)
+import Date exposing (Date)
 
 -- local
 import Model exposing (Item (..), ItemData, itemId, ifFullThen, runWithDefault, isLite)
+import Components.TimeLabel exposing (timeLabel)
 
 
 type alias Comment = Item
@@ -58,8 +60,8 @@ updateInDict pathIds newComment mbOldComment =
       Nothing
 
 
-comment : Comment -> Html a
-comment cmt =
+comment : Date -> Comment -> Html a
+comment currentTime cmt =
   let
     cbId data =
       "cb" ++ toString data.id
@@ -75,11 +77,13 @@ comment cmt =
               [ div [ class "arrow" ] []
               , div [ class "nickname"]
                   [ text <| mwd data.by ]
+              , div [ class "time" ]
+                  [ timeLabel currentTime data.time ]
               ]
           , div [ class "comment-body", innerHtml data.text ]
               []
           , div [ class "comment-kids" ]
-              <| comments data.kids
+              <| comments currentTime data.kids
           ]
 
         Lite _ ->
@@ -89,13 +93,13 @@ comment cmt =
       comment'
 
 
-comments : Dict Int (Int, Comment) -> List (Html a)
-comments commentsData =
+comments : Date -> Dict Int (Int, Comment) -> List (Html a)
+comments currentDate commentsData =
   Dict.values commentsData
     |> List.sortBy fst
     |> List.map snd
     |> List.filter dropDeleted
-    |> List.map comment
+    |> List.map (comment currentDate)
 
 
 dropDeleted : Item -> Bool

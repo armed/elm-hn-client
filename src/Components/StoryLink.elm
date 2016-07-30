@@ -4,23 +4,25 @@ module Components.StoryLink exposing (view, Msg (..))
 import Html exposing (Html, div, text, a)
 import Html.Attributes exposing (id, class, href, target)
 import Html.Events exposing (onClick)
+import Date exposing (Date)
 
 -- local
 import Components.FaIcon exposing (faIcon)
-import Model exposing (Item (..), ItemData, itemId)
+import Components.TimeLabel exposing (timeLabel)
+import Model exposing (Model, Item (..), ItemData, itemId)
 
 
 type Msg = Open Int
 
 
-view : Item -> Maybe Item -> Html Msg
-view story mbOpenedStory =
+view : Item -> Date -> Maybe Item -> Html Msg
+view story currentDate mbOpenedStory =
   case story of
     Lite _ ->
       placeholderView
 
     Full storyData ->
-      storyView storyData <| isActive story mbOpenedStory
+      storyView storyData currentDate <| isActive story mbOpenedStory
 
 
 isActive : Item -> Maybe Item -> Bool
@@ -38,8 +40,8 @@ placeholderView =
   div [ class "story-link" ] []
 
 
-storyView : ItemData -> Bool -> Html Msg
-storyView storyData active =
+storyView : ItemData -> Date -> Bool -> Html Msg
+storyView storyData currentDate active =
   let
     clz =
       "story-link"
@@ -66,6 +68,9 @@ storyView storyData active =
           , div [ class "story-comments" ]
               [ faIcon "comments-o"
               , text <| toString storyData.descendants
+              ]
+          , div [ class "story-time" ]
+              [ timeLabel currentDate storyData.time
               ]
           ]
       ]

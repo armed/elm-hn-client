@@ -16,7 +16,7 @@ update msg model =
   case msg of
     ItemIdsLoad list ->
       { model | stories = List.map Lite list  }
-        ! (itemDataRequestCmds [] list)
+        ! (itemDataRequestCmds [] <| List.reverse list)
 
     ItemLoad pathIds item ->
       if List.length pathIds > 1 then
