@@ -24,16 +24,20 @@ body {
     flex-flow: row-reverse;
     justify-content: flex-end;
 
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       font-size: .9em;
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 570px) {
       font-size: .9em;
     }
 
-    @media (max-width: 400px) {
+    @media (max-width: 480px) {
       font-size: .8em;
+    }
+
+    @media (max-width: 320px) {
+      font-size: .7em;
     }
   }
 }

@@ -1,8 +1,8 @@
 {
-  "name": "999dice",
-  "description": "999dice clone",
+  "name": "elm-hn-client",
+  "description": "Elm HN Client",
   "version": "1.0.0",
-  "author": "Artem Medeusheyev <artem.medeusheyev@voix.io>",
+  "author": "Artem Medeusheyev <artem.medeusheyev@gmail.comgit >",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base src/",
     "build": "rimraf dist && webpack",
