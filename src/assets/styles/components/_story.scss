@@ -21,6 +21,7 @@
       padding: 5px;
 
       &:empty:before {
+        color: #aaa;
         content: "No comments";
       }
     }

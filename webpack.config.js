@@ -125,8 +125,8 @@ if (TARGET_ENV === 'production') {
       // minify & mangle JS/CSS
       new webpack.optimize.UglifyJsPlugin({
           minimize:   true,
-          compressor: { warnings: false }
-          // mangle:  true
+          compressor: { warnings: false },
+          mangle:  true
       })
     ]
 
