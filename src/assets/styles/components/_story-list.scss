@@ -67,7 +67,7 @@
           margin-top: 4px;
           font-size: .7em;
           text-overflow: ellipsis;
-          max-width: 240px;
+          max-width: 140px;
           white-space: nowrap;
           overflow: hidden;
 
@@ -88,6 +88,7 @@
         align-items: flex-end;
         color: #777;
         margin-left: 3px;
+        min-width: 45px;
         font-size: .7em;
 
         .story-score, .story-comments, .story-time {
@@ -97,7 +98,7 @@
           justify-content: flex-end;
           width: 20px;
           i {
-            padding-right: 2px;
+            margin-right: 2px;
           }
         }
       }
