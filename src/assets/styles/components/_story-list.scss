@@ -3,6 +3,7 @@
   width: 300px;
   padding-right: 10px;
   height: 100%;
+  font-size: 1em;
 
   @media (max-width: 700px) {
     .story:not(:empty) ~ & {
@@ -15,7 +16,7 @@
     padding-left: 10px;
     padding-right: 10px;
     overflow: auto;
-    font-size: 1.3em;
+    font-size: 1.2em;
 
     & > .header {
       top: 0;
@@ -89,22 +90,15 @@
         margin-left: 3px;
         font-size: .75em;
 
-        @mixin infoIcon($code) {
-          margin-top: 3px;
-          &:before {
-            color: #bbb;
-            font-family: 'FortAwesome';
+        .story-score, .story-comments {
+          color: #bbb;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: 20px;
+          i {
             padding-right: 2px;
-            content: $code;
           }
-        }
-
-        .story-score {
-          @include infoIcon('\f001')
-        }
-
-        .story-comments {
-          @include infoIcon('\f000');
         }
       }
     }

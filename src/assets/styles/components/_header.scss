@@ -37,9 +37,6 @@
     &:hover {
       color: #fff;
     }
-    &:before {
-      content: "<";
-    }
   }
 
   .title {
@@ -85,13 +82,8 @@
     justify-content: center;
     align-items: center;
 
-    font-family: 'FortAwesome';
     font-size: 2em;
     text-decoration: none;
-
-    &:before {
-      content: '\f002';
-    }
 
     &:hover {
       color: #fff;

@@ -6,6 +6,7 @@ import Html.Attributes exposing (id, class, href, target)
 import Html.Events exposing (onClick)
 
 -- local
+import Components.FaIcon exposing (faIcon)
 import Model exposing (Item (..), ItemData, itemId)
 
 
@@ -59,8 +60,12 @@ storyView storyData active =
           ]
       , div [ class "story-info" ]
           [ div [ class "story-score" ]
-              [ text <| toString storyData.score ]
+              [ faIcon "bar-chart"
+              , text <| toString storyData.score
+              ]
           , div [ class "story-comments" ]
-              [ text <| toString storyData.descendants ]
+              [ faIcon "comments-o"
+              , text <| toString storyData.descendants
+              ]
           ]
       ]
