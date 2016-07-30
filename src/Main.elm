@@ -13,8 +13,8 @@ import Keyboard
 import Decode
 import Model exposing (Model, StoryFilter (..), isFull)
 import Components.Story as Story
+import Components.Header as Header
 import Components.StoryLink as StoryLink
-import Components.ForkMeOnGithub exposing (forkMeOnGithub)
 import Subscriptions exposing (subscriptions)
 import Msg exposing (Msg (..))
 import Update exposing (update)
@@ -54,9 +54,9 @@ init =
 view : Model -> Html Msg
 view model =
   div [ class "content" ]
-    [ Story.view model.openedStory
+    [ Header.view model.openedStory
+    , Story.view model.openedStory
     , storyLinks model
-    , forkMeOnGithub
     ]
 
 
@@ -69,9 +69,9 @@ storyLinks { stories, openedStory } =
     storiesWithData =
       List.filter isFull stories
 
-    header = div [ class "header" ] []
-
-    links = List.map storyLink storiesWithData
+    links =
+      div [ class "links" ]
+        <| List.map storyLink storiesWithData
   in
     div [ class "story-list" ]
-      (header :: links)
+      [ links ]

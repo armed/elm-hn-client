@@ -3,6 +3,7 @@ module Components.Story exposing (..)
 -- vendor
 import Html exposing (Html, div, h4, text)
 import Html.Attributes exposing (id, class)
+import Html.Events exposing (onClick)
 import Html.Attributes.Extra exposing (innerHtml)
 
 -- local
@@ -31,9 +32,7 @@ emptyStory =
 
 fullStory : ItemData -> List (Html a)
 fullStory story =
-  [ div [ class "story-title" ]
-      [ text story.title ]
-  , div [ class "story-body" ]
+  [ div [ class "story-body" ]
       [ div [ class "story-text", innerHtml story.text ] []
       , div [ class "story-comments" ]
           <| comments story.kids

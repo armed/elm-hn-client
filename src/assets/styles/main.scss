@@ -2,23 +2,26 @@
 @import '../normalizr/main.css';
 
 @import 'variables';
+@import 'components/header';
 @import 'components/story-list';
 @import 'components/story';
-@import 'components/github-link';
 
 html, body {
   height: 100%;
   background-color: $hnbg;
   color: #222;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-  display: flex;
-
   .content {
+    padding-top: 50px;
+    box-sizing: border-box;
+    height: 100%;
+
     display: flex;
     flex-flow: row-reverse;
-    height: 100%;
-    flex: 1 100%;
+    justify-content: flex-end;
   }
 }

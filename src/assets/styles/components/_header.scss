@@ -1,0 +1,99 @@
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 40px;
+  min-height: 40px;
+  padding: 6px;
+  font-size: 1.3em;
+  background-color: $hnorange;
+  color: white;
+  line-height: normal;
+  display: flex;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    width: 240px;
+    min-width: 240px;
+    height: 40px;
+    margin-left: 60px;
+    &:before {
+      content: "Elm HN Client";
+    }
+  }
+
+  .back-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.6em;
+    cursor: pointer;
+    color: $headerLinkColor;
+    &:hover {
+      color: #fff;
+    }
+    &:before {
+      content: "<";
+    }
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 6px 0 40px;
+  }
+
+  &.story-opened {
+    .back-btn {
+      display: flex;
+    }
+
+    @media (max-width: 700px) {
+      font-size: 1.4em;
+      padding-left: 0;
+      padding-right: 0;
+      .github-link, .logo {
+        display: none;
+      }
+    }
+
+    @media (max-width: 550px) {
+      font-size: 1.2em;
+    }
+
+    @media (max-width: 400px) {
+      font-size: 1em;
+    }
+  }
+
+  .github-link {
+    color: $headerLinkColor;
+    position: absolute;
+    top: 12px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'FortAwesome';
+    font-size: 2em;
+    text-decoration: none;
+
+    &:before {
+      content: '\f002';
+    }
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}

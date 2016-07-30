@@ -2,26 +2,15 @@
 
 .story {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
-  &:empty {
-    display: none;
-  }
-
-  .story-title {
-    @include headerMixin(1.2em);
-  }
+  box-sizing: border-box;
+  overflow: auto;
 
   .story-body {
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
 
     .story-text {
-      margin-top: 70px;
       margin: 5px;
+      word-wrap: break-word;
+      // word-break: break-all;
 
       &:empty {
         display: none;
@@ -30,6 +19,35 @@
 
     .story-comments {
       padding: 5px;
+
+      &:empty:before {
+        content: "No comments";
+      }
+    }
+
+    .story-comments, .story-text {
+      * {
+        word-wrap: break-word;
+        // word-break: break-all;
+      }
+      a {
+        text-overflow: ellipsis;
+      }
+      @media (max-width: 600px) {
+        max-width: 570px;
+      }
+
+      @media (max-width: 500px) {
+        max-width: 470px;
+      }
+
+      @media (max-width: 400px) {
+        max-width: 370px;
+      }
+
+      @media (max-width: 300px) {
+        max-width: 270px;
+      }
     }
   }
 }

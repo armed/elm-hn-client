@@ -1,26 +1,19 @@
 .story-list {
   min-width: 300px;
   width: 300px;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding-right: 10px;
+  height: 100%;
 
-  .header {
-    @include headerMixin(1.5em);
-    position: fixed;
-    width: 300px;
-    max-width: 300px;
-    &:after {
-      content: "Elm HN reader";
+  @media (max-width: 700px) {
+    .story:not(:empty) ~ & {
+      display: none;
     }
   }
 
   .story:empty ~ & {
-    max-height: 95%;
-    width: 90%;
-    padding-left: 5%;
-    padding-right: 5%;
-    padding-bottom: 5%;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
     overflow: auto;
     font-size: 1.3em;
 
@@ -34,84 +27,87 @@
     }
   }
 
-  .story-link {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 5px 10px 5px;
-    color: grey;
-    border-left: 3px solid $hnbg;
-    border-bottom: 1px solid #ddd;
+  .links {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
 
-    &:hover {
-      background-color: $hngreybg;
-      border-left-color:  $hngreybg;
-    }
-
-    &:nth-child(2) {
-      margin-top: 62px;
-    }
-
-    &.opened {
-      color: $hoverColor;
-      border-left-color: $hnorange;
-    }
-
-    .story-title {
+    .story-link {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 5px 10px 5px;
+      color: grey;
+      border-left: 3px solid $hnbg;
+      border-bottom: 1px solid #ddd;
 
-      .title-text {
-        cursor: pointer;
-        &:hover {
-          color: $hoverColor;
-        }
+      &:hover {
+        background-color: $hngreybg;
+        border-left-color:  $hngreybg;
       }
 
-      .url {
-        cursor: pointer;
-        margin-top: 4px;
-        font-size: .7em;
-        text-overflow: ellipsis;
-        max-width: 240px;
-        white-space: nowrap;
-        overflow: hidden;
+      &.opened {
+        color: $hoverColor;
+        border-left-color: $hnorange;
+      }
 
-        a {
-          text-decoration: none;
-          color: grey;
+      .story-title {
+        display: flex;
+        flex-direction: column;
+
+        .title-text {
+          cursor: pointer;
           &:hover {
             color: $hoverColor;
           }
         }
-      }
-    }
 
-    .story-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-end;
-      color: #777;
-      margin-left: 3px;
-      font-size: .75em;
+        .url {
+          cursor: pointer;
+          margin-top: 4px;
+          font-size: .7em;
+          text-overflow: ellipsis;
+          max-width: 240px;
+          white-space: nowrap;
+          overflow: hidden;
 
-      @mixin infoIcon($code) {
-        margin-top: 3px;
-        &:before {
-          color: #bbb;
-          font-family: 'FortAwesome';
-          padding-right: 2px;
-          content: $code;
+          a {
+            text-decoration: none;
+            color: grey;
+            &:hover {
+              color: $hoverColor;
+            }
+          }
         }
       }
 
-      .story-score {
-        @include infoIcon('\f001')
-      }
+      .story-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        color: #777;
+        margin-left: 3px;
+        font-size: .75em;
 
-      .story-comments {
-        @include infoIcon('\f000');
+        @mixin infoIcon($code) {
+          margin-top: 3px;
+          &:before {
+            color: #bbb;
+            font-family: 'FortAwesome';
+            padding-right: 2px;
+            content: $code;
+          }
+        }
+
+        .story-score {
+          @include infoIcon('\f001')
+        }
+
+        .story-comments {
+          @include infoIcon('\f000');
+        }
       }
     }
   }
 }
+//
