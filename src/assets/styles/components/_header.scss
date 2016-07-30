@@ -6,7 +6,7 @@
   height: 40px;
   min-height: 40px;
   padding: 6px;
-  font-size: 1.3em;
+  font-size: 1.4em;
   background-color: $hnorange;
   color: white;
   line-height: normal;
@@ -30,7 +30,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    font-size: 1.6em;
+    font-size: 18px;
     cursor: pointer;
     color: $headerLinkColor;
     text-decoration: none;
@@ -44,6 +44,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-size: 1.1em;
     padding: 0 6px 0 6px;
   }
 
@@ -53,20 +54,11 @@
     }
 
     @media (max-width: 700px) {
-      font-size: 1.4em;
       padding-left: 0;
       padding-right: 0;
       .github-link, .logo {
         display: none;
       }
-    }
-
-    @media (max-width: 550px) {
-      font-size: 1.2em;
-    }
-
-    @media (max-width: 400px) {
-      font-size: 1em;
     }
   }
 
@@ -82,7 +74,7 @@
     justify-content: center;
     align-items: center;
 
-    font-size: 2em;
+    font-size: 30px;
     text-decoration: none;
 
     &:hover {
