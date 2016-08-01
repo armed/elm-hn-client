@@ -17,7 +17,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   let
     handleEscKey keyCode =
-      if (Debug.log "keyCode" keyCode) == 27 then
+      if keyCode == 27 then
         CloseStory
       else
         EmptyMsg

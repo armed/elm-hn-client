@@ -40,7 +40,6 @@ timeLabel pastDate currentTime =
   let
     currentDate = XDate.fromTime (currentTime * 1000)
     diff = Period.diff pastDate currentDate
-    _ = Debug.log "diff" diff
     mbTimeLbl = Maybe.oneOf <| List.map (\mapper -> mapper diff) maybeMappers
   in
     text <| Maybe.withDefault "now" mbTimeLbl
