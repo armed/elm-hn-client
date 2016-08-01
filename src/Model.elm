@@ -92,3 +92,13 @@ runWithDefault item func default =
 
     _ ->
       default
+
+
+toMaybe : Item -> Maybe ItemData
+toMaybe item =
+  case item of
+    Full data ->
+      Just data
+
+    Lite _ ->
+      Nothing

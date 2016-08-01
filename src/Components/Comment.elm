@@ -1,4 +1,4 @@
-module Components.Comment exposing (..)
+module Components.Comment exposing (update, comments)
 
 -- vendor
 import Html exposing (Html, div, text, label, input)
@@ -8,8 +8,17 @@ import Dict exposing (Dict)
 import Date exposing (Date)
 
 -- local
-import Model exposing (Item (..), ItemData, itemId, ifFullThen, runWithDefault, isLite)
 import Components.TimeLabel exposing (timeLabel)
+import Model exposing
+  ( Item (..)
+  , ItemData
+  , itemId
+  , ifFullThen
+  , runWithDefault
+  , isLite
+  , isFull
+  , toMaybe
+  )
 
 
 type alias Comment = Item
@@ -60,53 +69,44 @@ updateInDict pathIds newComment mbOldComment =
       Nothing
 
 
-comment : Date -> Comment -> Html a
-comment currentTime cmt =
+comment : Date -> ItemData -> Html a
+comment currentTime data =
   let
-    cbId data =
+    cbId =
       "cb" ++ toString data.id
-
-    mwd =
-      Maybe.withDefault ""
-
-    comment' =
-      case cmt of
-        Full data ->
-          [ input [ id <| cbId data, type' "checkbox" ] []
-          , label [ class "comment-header", for <| cbId data ]
-              [ div [ class "arrow" ] []
-              , div [ class "nickname"]
-                  [ text <| mwd data.by ]
-              , div [ class "time" ]
-                  [ timeLabel currentTime data.time ]
-              ]
-          , div [ class "comment-body", innerHtml data.text ]
-              []
-          , div [ class "comment-kids" ]
-              <| comments currentTime data.kids
-          ]
-
-        Lite _ ->
-          []
   in
-    div [ class "comment" ]
-      comment'
+    div [ class "comment", id <| toString data.score ]
+      [ input [ id cbId, type' "checkbox" ] []
+      , label [ class "comment-header", for cbId ]
+          [ div [ class "arrow" ] []
+          , div [ class "nickname"]
+              [ text <| Maybe.withDefault "" data.by ]
+          , div [ class "time" ]
+              [ timeLabel currentTime data.time ]
+          ]
+      , div [ class "comment-body", innerHtml data.text ]
+          []
+      , div [ class "comment-kids" ]
+          <| comments currentTime data.kids
+      ]
 
 
 comments : Date -> Dict Int (Int, Comment) -> List (Html a)
 comments currentDate commentsData =
-  Dict.values commentsData
-    |> List.sortBy fst
-    |> List.map snd
-    |> List.filter dropDeleted
-    |> List.map (comment currentDate)
+  let
+    mbMapper item =
+      (item |> snd >> toMaybe) `Maybe.andThen` notDeleted
+  in
+    Dict.values commentsData
+      |> List.sortBy fst
+      |> List.filterMap mbMapper
+      |> List.map (comment currentDate)
 
 
-dropDeleted : Item -> Bool
-dropDeleted cmt =
-  case cmt of
-    Full data ->
-      not data.deleted
+notDeleted : ItemData -> Maybe ItemData
+notDeleted data =
+  if not data.deleted then
+    Just data
 
-    _ ->
-      True
+  else
+    Nothing
