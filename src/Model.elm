@@ -54,7 +54,7 @@ type ItemType
 
 isFull : Item -> Bool
 isFull item =
-  not <| isLite item
+  not (isLite item)
 
 
 isLite : Item -> Bool
@@ -77,11 +77,6 @@ itemId a =
 ifFullThen : Item -> (ItemData -> Item) -> Item
 ifFullThen item func =
   runWithDefault item func item
-
-
-isComment : Item -> Bool
-isComment item =
-  runWithDefault item (.kind >> (==) Comment) False
 
 
 runWithDefault : Item -> (ItemData -> a) -> a -> a
