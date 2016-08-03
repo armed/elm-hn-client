@@ -53,19 +53,22 @@ update oldComment newComment pathIds =
 
 updateComment : Item -> Item -> List Int -> Item
 updateComment oldComment newComment pathIds =
-    case List.head pathIds of
-        Just id ->
-            oldComment
-                `ifFullThen`
-                    (\data ->
-                        Full <|
-                            { data
-                                | kids = Dict.update id (updateInDict pathIds newComment) data.kids
-                            }
-                    )
+    let
+        updateCommentInDict =
+            updateInDict pathIds newComment
 
-        _ ->
-            newComment
+        updateData id data =
+            Full <|
+                { data
+                    | kids = Dict.update id updateCommentInDict data.kids
+                }
+    in
+        case List.head pathIds of
+            Just id ->
+                oldComment `ifFullThen` (updateData id)
+
+            _ ->
+                newComment
 
 
 updateInDict : List Int -> Item -> Maybe ( Int, Item ) -> Maybe ( Int, Item )
