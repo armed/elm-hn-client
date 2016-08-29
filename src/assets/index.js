@@ -12,7 +12,7 @@ app.ports.getItemIds.subscribe(function (filter) {
   fireApp
     .database()
     .ref('v0/' + filter)
-    .limitToFirst(30)
+    .limitToFirst(100)
     .on('value', function (snapshot) {
       app.ports.itemIds.send(snapshot.val());
     });
