@@ -41,11 +41,6 @@
       border-left: 3px solid $hnbg;
       border-bottom: 1px solid #ddd;
 
-      &:hover {
-        background-color: $hngreybg;
-        border-left-color:  $hngreybg;
-      }
-
       &.opened {
         color: $hoverColor;
         border-left-color: $hnorange;
