@@ -3,6 +3,7 @@ module Components.Story exposing (..)
 -- vendor
 
 import Html exposing (Html, div, h4, text)
+import Html.Keyed as Keyed
 import Html.Attributes exposing (id, class)
 import Html.Attributes.Extra exposing (innerHtml)
 import Date exposing (Date)
@@ -37,7 +38,7 @@ fullStory : Date -> ItemData -> List (Html a)
 fullStory currentDate story =
     [ div [ class "story-body" ]
         [ div [ class "story-text", innerHtml story.text ] []
-        , div [ class "story-comments" ] <|
+        , Keyed.node "div" [ class "story-comments" ] <|
             comments currentDate story.kids
         ]
     ]

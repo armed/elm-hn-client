@@ -3,6 +3,7 @@ module Components.Comment exposing (update, comments)
 -- vendor
 
 import Html exposing (Html, div, text, label, input)
+import Html.Keyed as Keyed
 import Html.Attributes exposing (id, class, attribute, for, type')
 import Html.Attributes.Extra exposing (innerHtml)
 import Dict exposing (Dict)
@@ -81,13 +82,15 @@ updateInDict pathIds newComment mbOldComment =
             Nothing
 
 
-comment : Date -> ItemData -> Html a
+comment : Date -> ItemData -> ( String, Html a )
 comment currentTime data =
     let
         cbId =
             "cb" ++ toString data.id
     in
-        div [ class "comment", id <| toString data.score ]
+        ( cbId
+        , div
+            [ class "comment" ]
             [ input [ id cbId, type' "checkbox" ] []
             , label [ class "comment-header", for cbId ]
                 [ div [ class "arrow" ] []
@@ -98,13 +101,14 @@ comment currentTime data =
                 ]
             , div [ class "comment-body", innerHtml data.text ]
                 []
-            , div [ class "comment-kids" ] <|
+            , Keyed.node "div" [ class "comment-kids" ] <|
                 comments currentTime data.kids
             ]
+        )
 
 
-comments : Date -> Dict Int ( Int, Comment ) -> List (Html a)
-comments currentDate commentsData =
+comments : Date -> Dict Int ( Int, Comment ) -> List ( String, Html a )
+comments currentTime commentsData =
     let
         mbMapper item =
             (item |> snd >> toMaybe) `Maybe.andThen` notDeleted
@@ -112,7 +116,7 @@ comments currentDate commentsData =
         Dict.values commentsData
             |> List.sortBy fst
             |> List.filterMap mbMapper
-            |> List.map (comment currentDate)
+            |> List.map (comment currentTime)
 
 
 notDeleted : ItemData -> Maybe ItemData
