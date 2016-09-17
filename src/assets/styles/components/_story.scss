@@ -18,6 +18,7 @@
 
     .story-comments {
       padding: 5px;
+      overflow-x: hidden;
 
       &:empty:before {
         color: #aaa;
