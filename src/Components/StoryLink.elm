@@ -26,6 +26,11 @@ view story currentDate mbOpenedStory =
             storyView storyData currentDate <| isActive story mbOpenedStory
 
 
+placeholderView : Html a
+placeholderView =
+    div [ class "story-link" ] []
+
+
 isActive : Item -> Maybe Item -> Bool
 isActive story mbOpenedStory =
     case mbOpenedStory of
@@ -34,11 +39,6 @@ isActive story mbOpenedStory =
 
         _ ->
             False
-
-
-placeholderView : Html a
-placeholderView =
-    div [ class "story-link" ] []
 
 
 storyView : ItemData -> Date -> Bool -> Html Msg
