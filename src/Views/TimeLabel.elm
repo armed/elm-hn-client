@@ -1,4 +1,4 @@
-module Components.TimeLabel exposing (timeLabel)
+module Views.TimeLabel exposing (timeLabel)
 
 -- vendor
 

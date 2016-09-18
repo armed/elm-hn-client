@@ -1,4 +1,4 @@
-module Components.Story exposing (..)
+module Views.Story exposing (..)
 
 -- vendor
 
@@ -12,7 +12,7 @@ import Date exposing (Date)
 -- local
 
 import Model exposing (Item(..), ItemData, runWithDefault)
-import Components.Comment as Comment exposing (comments)
+import Views.Comment as Comment exposing (comments)
 
 
 view : Maybe Item -> Date -> Html a

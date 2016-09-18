@@ -15,9 +15,9 @@ import Date
 -- local
 
 import Model exposing (Model, StoryFilter(..), isFull)
-import Components.Story as Story
-import Components.Header as Header
-import Components.StoryLink as StoryLink
+import Views.Story as Story
+import Views.Header as Header
+import Views.StoryLink as StoryLink
 import Subscriptions exposing (subscriptions)
 import Msg exposing (Msg(..))
 import Update exposing (update)
@@ -73,7 +73,7 @@ storyLinks : Model -> Html Msg
 storyLinks { stories, openedStory, currentTime } =
     let
         storyLink story =
-            App.map OpenStory <| StoryLink.view story currentTime openedStory
+            StoryLink.view story currentTime openedStory
 
         storiesWithData =
             List.filter isFull stories

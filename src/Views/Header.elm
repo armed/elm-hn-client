@@ -1,4 +1,4 @@
-module Components.Header exposing (..)
+module Views.Header exposing (..)
 
 -- vendor
 
@@ -9,7 +9,7 @@ import Html.Events exposing (onClick)
 
 -- local
 
-import Components.FaIcon exposing (faIcon)
+import Views.FaIcon exposing (faIcon)
 import Msg exposing (Msg(CloseStory))
 import Model exposing (Item, runWithDefault)
 

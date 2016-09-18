@@ -1,4 +1,4 @@
-module Components.Comment exposing (update, comments)
+module Views.Comment exposing (update, comments)
 
 -- vendor
 
@@ -12,7 +12,7 @@ import Date exposing (Date)
 
 -- local
 
-import Components.TimeLabel exposing (timeLabel)
+import Views.TimeLabel exposing (timeLabel)
 import Model
     exposing
         ( Item(..)

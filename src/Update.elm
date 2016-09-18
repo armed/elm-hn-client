@@ -10,8 +10,7 @@ import Dict
 import Msg exposing (..)
 import Model exposing (..)
 import Ports exposing (..)
-import Components.StoryLink as StoryLink
-import Components.Comment as Comment
+import Views.Comment as Comment
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -36,7 +35,7 @@ update msg model =
             -- will handle someday
             ( model, Cmd.none )
 
-        OpenStory (StoryLink.Open id) ->
+        OpenStory id ->
             List.filter (\s -> itemId s == id) model.stories
                 |> List.head
                 |> (\mbStory ->

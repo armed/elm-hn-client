@@ -1,4 +1,4 @@
-module Components.FaIcon exposing (..)
+module Views.FaIcon exposing (..)
 
 -- vendor
 
