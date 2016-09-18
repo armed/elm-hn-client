@@ -89,12 +89,12 @@ loadComments mbStory =
 
 updateStoryList : Model -> Item -> ( Model, Cmd Msg )
 updateStoryList model item =
-    { model | stories = updateStoryInList item model.stories }
+    { model | stories = updateStory item model.stories }
         ! []
 
 
-updateStoryInList : Item -> List Item -> List Item
-updateStoryInList updatedItem listOfItems =
+updateStory : Item -> List Item -> List Item
+updateStory updatedItem listOfItems =
     let
         mapper oldItem =
             if itemId oldItem == itemId updatedItem then
