@@ -10,6 +10,7 @@ import String
 import Time
 import Task
 import Date
+import Result
 
 
 -- local
@@ -53,15 +54,11 @@ init result =
         defaultDate =
             Date.fromTime 0
 
-        initalModel =
-            Model defaultFilter [] Nothing defaultDate HomePage
-
-        ( model, cmd ) =
-            urlUpdate result initalModel
+        initPage =
+            Result.withDefault HomePage result
     in
-        model
-            ! [ cmd
-              , Task.perform UnexpectedError (Date.fromTime >> CurrentTime) Time.now
+        Model defaultFilter [] Nothing defaultDate initPage
+            ! [ Task.perform UnexpectedError (Date.fromTime >> CurrentTime) Time.now
               , Ports.getItemIds <| String.toLower <| toString defaultFilter
               ]
 

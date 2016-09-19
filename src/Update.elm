@@ -4,6 +4,7 @@ module Update exposing (update, urlUpdate)
 
 import Dict
 import Navigation
+import Maybe.Extra as Maybe
 
 
 -- local
@@ -22,8 +23,20 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ItemIdsLoad list ->
-            { model | stories = List.map Lite list }
-                ! (itemDataRequestCmds [] <| List.reverse list)
+            let
+                navCmd =
+                    case model.page of
+                        StoryPage id ->
+                            Navigation.newUrl <| Nav.toHash model.page
+
+                        _ ->
+                            Cmd.none
+
+                itemDataCmds =
+                    itemDataRequestCmds [] <| List.reverse list
+            in
+                { model | stories = List.map Lite list }
+                    ! (itemDataCmds ++ [ navCmd ])
 
         ItemLoad pathIds item ->
             if List.length pathIds > 1 then
@@ -51,7 +64,7 @@ update msg model =
                 ! []
 
         EmptyMsg ->
-            ( model, Cmd.none )
+            model ! []
 
 
 updateOpenedStory : Model -> Item -> List Int -> Item -> ( Model, Cmd Msg )
@@ -71,14 +84,15 @@ updateOpenedStory model oldStory pathIds newStory =
             model ! []
 
 
-loadComments : Maybe Item -> List (Cmd Msg)
-loadComments mbStory =
+loadCommentsCmds : Maybe Item -> List (Cmd Msg)
+loadCommentsCmds mbStory =
     let
         cmdMaker data =
             itemDataRequestCmds [ data.id ] <| Dict.keys data.kids
     in
         case mbStory of
             Just story ->
+                -- loading comments only is story isFull
                 runWithDefault story cmdMaker []
 
             Nothing ->
@@ -86,21 +100,31 @@ loadComments mbStory =
 
 
 updateStoryList : Model -> Item -> ( Model, Cmd Msg )
-updateStoryList model item =
-    { model | stories = updateStory item model.stories }
-        ! []
-
-
-updateStory : Item -> List Item -> List Item
-updateStory updatedItem listOfItems =
+updateStoryList model updatedItem =
     let
         mapper oldItem =
             if itemId oldItem == itemId updatedItem then
                 updatedItem
             else
                 oldItem
+
+        updatedModel =
+            { model
+                | stories = List.map mapper model.stories
+                , openedStory = Maybe.map mapper model.openedStory
+            }
+
+        openedStoryWasntLoaded =
+            Maybe.mapDefault True isLite model.openedStory
+
+        -- when app loaded with story url we should try to load story comments
+        cmds =
+            if openedStoryWasntLoaded then
+                loadCommentsCmds updatedModel.openedStory
+            else
+                []
     in
-        List.map mapper listOfItems
+        updatedModel ! cmds
 
 
 itemDataRequestCmds : List Int -> List Int -> List (Cmd Msg)
@@ -119,7 +143,7 @@ appendTo pathIds i =
 
 urlUpdate : Result String Page -> Model -> ( Model, Cmd Msg )
 urlUpdate result model =
-    case Debug.log "result" result of
+    case result of
         Err _ ->
             ( model, Navigation.modifyUrl (Nav.toHash model.page) )
 
@@ -138,5 +162,5 @@ urlUpdate result model =
                             | openedStory = mbStory
                             , page = page
                         }
-                            ! (loadComments mbStory)
+                            ! (loadCommentsCmds mbStory)
                    )
