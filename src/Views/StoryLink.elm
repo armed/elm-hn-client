@@ -6,34 +6,31 @@ import Html exposing (Html, div, text, a)
 import Html.Attributes exposing (id, class, href, target)
 import Html.Events exposing (onClick)
 import Date exposing (Date)
+import Maybe.Extra as Maybe
 
 
 -- local
 
 import Views.FaIcon exposing (faIcon)
 import Views.TimeLabel exposing (timeLabel)
-import Model exposing (Model, Item(..), ItemData, itemId)
+import Model exposing (Model, Item(..), ItemData, itemId, runWithDefault)
 import Msg exposing (Msg(OpenStory))
 
 
 view : Item -> Date -> Maybe Item -> Html Msg
 view story currentDate mbOpenedStory =
-    case story of
-        Lite _ ->
-            placeholderView
-
-        Full storyData ->
-            storyView storyData currentDate <| isActive story mbOpenedStory
+    runWithDefault
+        placeholderView
+        (storyView currentDate (isActive story mbOpenedStory))
+        story
 
 
 isActive : Item -> Maybe Item -> Bool
 isActive story mbOpenedStory =
-    case mbOpenedStory of
-        Just openedStory ->
-            itemId story == itemId openedStory
-
-        _ ->
-            False
+    Maybe.mapDefault
+        False
+        ((==) (itemId story) << itemId)
+        mbOpenedStory
 
 
 placeholderView : Html a
@@ -41,8 +38,8 @@ placeholderView =
     div [ class "story-link" ] []
 
 
-storyView : ItemData -> Date -> Bool -> Html Msg
-storyView storyData currentDate active =
+storyView : Date -> Bool -> ItemData -> Html Msg
+storyView currentDate active storyData =
     let
         clz =
             "story-link"

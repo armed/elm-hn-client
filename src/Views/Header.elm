@@ -5,6 +5,7 @@ module Views.Header exposing (..)
 import Html exposing (Html, div, text, a, span, i)
 import Html.Attributes exposing (class, href, title, target)
 import Html.Events exposing (onClick)
+import Maybe.Extra as Maybe
 
 
 -- local
@@ -17,13 +18,14 @@ import Model exposing (Item, runWithDefault)
 view : Maybe Item -> Html Msg
 view mbStory =
     let
-        ( isStoryOpened, titleText ) =
-            case mbStory of
-                Just story ->
-                    ( True, runWithDefault story .title "" )
+        defaultFn =
+            (,) True << runWithDefault "" .title
 
-                Nothing ->
-                    ( False, "" )
+        ( isStoryOpened, titleText ) =
+            Maybe.mapDefault
+                ( False, "" )
+                defaultFn
+                mbStory
 
         clz =
             if isStoryOpened then

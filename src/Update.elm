@@ -26,11 +26,11 @@ update msg model =
             let
                 navCmd =
                     case model.page of
-                        StoryPage id ->
-                            Navigation.newUrl <| Nav.toHash model.page
+                        HomePage ->
+                            Cmd.none
 
                         _ ->
-                            Cmd.none
+                            Navigation.newUrl <| Nav.toHash model.page
 
                 itemDataCmds =
                     itemDataRequestCmds [] <| List.reverse list
@@ -40,12 +40,10 @@ update msg model =
 
         ItemLoad pathIds item ->
             if List.length pathIds > 1 then
-                case model.openedStory of
-                    Just story ->
-                        updateOpenedStory model story pathIds item
-
-                    Nothing ->
-                        model ! []
+                Maybe.mapDefault
+                    ( model, Cmd.none )
+                    (updateOpenedStory model pathIds item)
+                    model.openedStory
             else
                 updateStoryList model item
 
@@ -67,8 +65,8 @@ update msg model =
             model ! []
 
 
-updateOpenedStory : Model -> Item -> List Int -> Item -> ( Model, Cmd Msg )
-updateOpenedStory model oldStory pathIds newStory =
+updateOpenedStory : Model -> List Int -> Item -> Item -> ( Model, Cmd Msg )
+updateOpenedStory model pathIds newStory oldStory =
     let
         rootId =
             Maybe.withDefault -1 (List.head pathIds)
@@ -90,13 +88,7 @@ loadCommentsCmds mbStory =
         cmdMaker data =
             itemDataRequestCmds [ data.id ] <| Dict.keys data.kids
     in
-        case mbStory of
-            Just story ->
-                -- loading comments only is story isFull
-                runWithDefault story cmdMaker []
-
-            Nothing ->
-                []
+        Maybe.mapDefault [] (runWithDefault [] cmdMaker) mbStory
 
 
 updateStoryList : Model -> Item -> ( Model, Cmd Msg )
@@ -108,23 +100,23 @@ updateStoryList model updatedItem =
             else
                 oldItem
 
-        updatedModel =
-            { model
-                | stories = List.map mapper model.stories
-                , openedStory = Maybe.map mapper model.openedStory
-            }
-
-        openedStoryWasntLoaded =
+        firstTimeInit =
             Maybe.mapDefault True isLite model.openedStory
 
-        -- when app loaded with story url we should try to load story comments
-        cmds =
-            if openedStoryWasntLoaded then
-                loadCommentsCmds updatedModel.openedStory
+        mappedStory =
+            Maybe.map mapper model.openedStory
+
+        -- when app initialized with story url we should try to load story comments
+        ( updatedModel, cmds ) =
+            if firstTimeInit then
+                ( { model | openedStory = mappedStory }
+                , loadCommentsCmds mappedStory
+                )
             else
-                []
+                ( model, [] )
     in
-        updatedModel ! cmds
+        { updatedModel | stories = List.map mapper model.stories }
+            ! cmds
 
 
 itemDataRequestCmds : List Int -> List Int -> List (Cmd Msg)

@@ -7,6 +7,7 @@ import Html.Keyed as Keyed
 import Html.Attributes exposing (id, class)
 import Html.Attributes.Extra exposing (innerHtml)
 import Date exposing (Date)
+import Maybe.Extra as Maybe
 
 
 -- local
@@ -18,15 +19,11 @@ import Views.Comment as Comment exposing (comments)
 view : Maybe Item -> Date -> Html a
 view mbStory currentDate =
     let
-        renderStory mbStory =
-            case mbStory of
-                Just storyItem ->
-                    runWithDefault storyItem (fullStory currentDate) emptyStory
-
-                Nothing ->
-                    emptyStory
+        defaultFn =
+            runWithDefault emptyStory (fullStory currentDate)
     in
-        div [ class "story" ] <| renderStory mbStory
+        div [ class "story" ] <|
+            Maybe.mapDefault emptyStory defaultFn mbStory
 
 
 emptyStory : List (Html a)

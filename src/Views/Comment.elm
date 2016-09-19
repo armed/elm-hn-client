@@ -8,6 +8,7 @@ import Html.Attributes exposing (id, class, attribute, for, type')
 import Html.Attributes.Extra exposing (innerHtml)
 import Dict exposing (Dict)
 import Date exposing (Date)
+import Maybe.Extra as Maybe
 
 
 -- local
@@ -18,7 +19,7 @@ import Model
         ( Item(..)
         , ItemData
         , itemId
-        , ifFullThen
+        , mapFull
         , runWithDefault
         , isLite
         , isFull
@@ -47,13 +48,13 @@ update oldComment newComment pathIds =
                 |> List.filter isLite
                 |> List.map itemId
     in
-        ( updateComment oldComment newComment pathIds
-        , runWithDefault newComment idsToFetch []
+        ( updateComment oldComment pathIds newComment
+        , runWithDefault [] idsToFetch newComment
         )
 
 
-updateComment : Item -> Item -> List Int -> Item
-updateComment oldComment newComment pathIds =
+updateComment : Item -> List Int -> Item -> Item
+updateComment oldComment pathIds newComment =
     let
         updateCommentInDict =
             updateInDict pathIds newComment
@@ -64,19 +65,17 @@ updateComment oldComment newComment pathIds =
                     | kids = Dict.update id updateCommentInDict data.kids
                 }
     in
-        case List.head pathIds of
-            Just id ->
-                oldComment `ifFullThen` (updateData id)
-
-            _ ->
-                newComment
+        Maybe.mapDefault
+            newComment
+            (mapFull oldComment << updateData)
+            (List.head pathIds)
 
 
 updateInDict : List Int -> Item -> Maybe ( Int, Item ) -> Maybe ( Int, Item )
 updateInDict pathIds newComment mbOldComment =
     case mbOldComment of
         Just ( index, oldComment ) ->
-            Just <| ( index, updateComment oldComment newComment <| List.drop 1 pathIds )
+            Just ( index, updateComment oldComment (List.drop 1 pathIds) newComment )
 
         _ ->
             Nothing

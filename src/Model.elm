@@ -84,13 +84,13 @@ itemId a =
             data.id
 
 
-ifFullThen : Item -> (ItemData -> Item) -> Item
-ifFullThen item func =
+mapFull : Item -> (ItemData -> Item) -> Item
+mapFull item func =
     runWithDefault item func item
 
 
-runWithDefault : Item -> (ItemData -> a) -> a -> a
-runWithDefault item func default =
+runWithDefault : a -> (ItemData -> a) -> Item -> a
+runWithDefault default func item =
     case item of
         Full data ->
             func data
