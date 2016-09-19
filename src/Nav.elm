@@ -31,7 +31,7 @@ pageParser : Parser (Page -> a) a
 pageParser =
     oneOf
         [ format HomePage (s "home")
-        , format StoryPage (s "story`" </> int)
+        , format StoryPage (s "story" </> int)
         ]
 
 

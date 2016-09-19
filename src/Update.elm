@@ -119,7 +119,7 @@ appendTo pathIds i =
 
 urlUpdate : Result String Page -> Model -> ( Model, Cmd Msg )
 urlUpdate result model =
-    case result of
+    case Debug.log "result" result of
         Err _ ->
             ( model, Navigation.modifyUrl (Nav.toHash model.page) )
 
