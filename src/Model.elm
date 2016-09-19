@@ -11,7 +11,13 @@ type alias Model =
     , stories : List Item
     , openedStory : Maybe Item
     , currentTime : Date
+    , page : Page
     }
+
+
+type Page
+    = HomePage
+    | StoryPage Int
 
 
 type StoryFilter

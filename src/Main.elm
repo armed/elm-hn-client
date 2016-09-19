@@ -5,7 +5,7 @@ module Main exposing (..)
 
 import Html exposing (Html, div, text, h3)
 import Html.Attributes exposing (class)
-import Html.App as App
+import Navigation
 import String
 import Time
 import Task
@@ -14,26 +14,29 @@ import Date
 
 -- local
 
-import Model exposing (Model, StoryFilter(..), isFull)
+import Model exposing (Model, StoryFilter(..), isFull, Page(..))
 import Views.Story as Story
 import Views.Header as Header
 import Views.StoryLink as StoryLink
 import Subscriptions exposing (subscriptions)
 import Msg exposing (Msg(..))
-import Update exposing (update)
+import Update exposing (update, urlUpdate)
+import Nav
 import Ports
 
 
 -- APP
+-- main : Program Never
 
 
 main : Program Never
 main =
-    App.program
+    Navigation.program Nav.parser
         { init = init
-        , update = update
-        , subscriptions = subscriptions
         , view = view
+        , update = update
+        , urlUpdate = urlUpdate
+        , subscriptions = subscriptions
         }
 
 
@@ -41,17 +44,24 @@ main =
 -- INIT
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Result String Page -> ( Model, Cmd Msg )
+init result =
     let
         defaultFilter =
             TopStories
 
         defaultDate =
             Date.fromTime 0
+
+        initalModel =
+            Model defaultFilter [] Nothing defaultDate HomePage
+
+        ( model, cmd ) =
+            urlUpdate result initalModel
     in
-        Model defaultFilter [] Nothing defaultDate
-            ! [ Task.perform UnexpectedError (Date.fromTime >> CurrentTime) Time.now
+        model
+            ! [ cmd
+              , Task.perform UnexpectedError (Date.fromTime >> CurrentTime) Time.now
               , Ports.getItemIds <| String.toLower <| toString defaultFilter
               ]
 

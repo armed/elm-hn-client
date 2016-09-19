@@ -1,8 +1,9 @@
-module Update exposing (update)
+module Update exposing (update, urlUpdate)
 
 -- vendor
 
 import Dict
+import Navigation
 
 
 -- local
@@ -10,7 +11,11 @@ import Dict
 import Msg exposing (..)
 import Model exposing (..)
 import Ports exposing (..)
+import Nav
 import Views.Comment as Comment
+
+
+-- update
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -36,16 +41,10 @@ update msg model =
             ( model, Cmd.none )
 
         OpenStory id ->
-            List.filter (\s -> itemId s == id) model.stories
-                |> List.head
-                |> (\mbStory ->
-                        { model | openedStory = mbStory }
-                            ! (loadComments mbStory)
-                   )
+            ( model, Navigation.newUrl <| Nav.toHash (StoryPage id) )
 
         CloseStory ->
-            { model | openedStory = Nothing }
-                ! []
+            ( model, Navigation.newUrl <| Nav.toHash HomePage )
 
         CurrentTime time ->
             { model | currentTime = time }
@@ -112,3 +111,32 @@ itemDataRequestCmds pathIds list =
 appendTo : List Int -> Int -> List Int
 appendTo pathIds i =
     pathIds ++ [ i ]
+
+
+
+-- urlUpdate
+
+
+urlUpdate : Result String Page -> Model -> ( Model, Cmd Msg )
+urlUpdate result model =
+    case result of
+        Err _ ->
+            ( model, Navigation.modifyUrl (Nav.toHash model.page) )
+
+        Ok HomePage ->
+            { model
+                | page = HomePage
+                , openedStory = Nothing
+            }
+                ! []
+
+        Ok ((StoryPage id) as page) ->
+            List.filter (\s -> itemId s == id) model.stories
+                |> List.head
+                |> (\mbStory ->
+                        { model
+                            | openedStory = mbStory
+                            , page = page
+                        }
+                            ! (loadComments mbStory)
+                   )
