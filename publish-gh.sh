@@ -1,7 +1,6 @@
 #!/bin/sh
 
-git co gh-pages &&\
- rm index.html *.js *.css &&\
+rm index.html *.js *.css &&\
  mv dist/* . &&\
  git add . &&\
  git ci -m 'upd' &&\
