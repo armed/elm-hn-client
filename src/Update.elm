@@ -86,8 +86,7 @@ storyCommentRequests model storyId =
                 else
                     Nothing
             )
-        `andThen` (.kids >> List.map Ports.getCommentData >> Just)
-        |> withDefault []
+        |> mapDefault [] (.kids >> List.map Ports.getCommentData)
 
 
 urlUpdate : Result String Page -> Model -> ( Model, Cmd Msg )
