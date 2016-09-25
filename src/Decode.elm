@@ -1,8 +1,8 @@
-module Decode exposing (..)
+module Decode exposing (storyIds, itemData)
 
 -- vendor
 
-import Json.Decode.Extra exposing ((|:), lazy)
+import Json.Decode.Extra exposing ((|:))
 import Json.Decode as Json
     exposing
         ( Decoder
@@ -29,21 +29,13 @@ import Dict exposing (Dict)
 import Model exposing (..)
 
 
-items : Decoder (List Item)
-items =
-    list item
+storyIds : Decoder (List Int)
+storyIds =
+    list int
 
 
-item : Decoder Item
-item =
-    oneOf
-        [ map Lite int
-        , map Full <| lazy (\_ -> full)
-        ]
-
-
-full : Decoder ItemData
-full =
+itemData : Decoder ItemData
+itemData =
     let
         defaultStr field =
             default field string ""
@@ -54,35 +46,16 @@ full =
             |: ("by" := string |> maybe)
             |: ("time" := int)
             |: defaultStr "text"
-            |: ("parent" := item |> maybe)
-            |: default "kids" (lazy <| \_ -> itemDict) Dict.empty
+            |: default "kids" (list int) []
             |: defaultStr "url"
             |: default "score" int 0
             |: defaultStr "title"
-            |: default "parts" (lazy <| \_ -> itemDict) Dict.empty
             |: default "descendants" int 0
 
 
 default : String -> Decoder a -> a -> Decoder a
 default field decoder defVal =
     oneOf [ field := decoder, succeed defVal ]
-
-
-itemListToDict : List Item -> Result a (Dict Int ( Int, Item ))
-itemListToDict items =
-    let
-        addItemToDict indexedItem dict =
-            Dict.insert (itemId <| snd indexedItem) indexedItem dict
-    in
-        items
-            |> List.indexedMap (,)
-            |> List.foldl addItemToDict Dict.empty
-            |> Result.Ok
-
-
-itemDict : Decoder (Dict Int ( Int, Item ))
-itemDict =
-    customDecoder (list item) itemListToDict
 
 
 itemType : Decoder ItemType

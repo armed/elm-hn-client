@@ -8,34 +8,30 @@ import Html.Attributes exposing (id, class)
 import Html.Attributes.Extra exposing (innerHtml)
 import Date exposing (Date)
 import Maybe.Extra as Maybe
+import Dict
 
 
 -- local
 
-import Model exposing (Item(..), ItemData, runWithDefault)
-import Views.Comment as Comment exposing (comments)
+import Model exposing (Model, OpenedStory)
+import Views.Comment as Comment
 
 
-view : Maybe Item -> Date -> Html a
-view mbStory currentDate =
+view : Model -> Html a
+view model =
+    div [ class "story" ] <|
+        Maybe.mapDefault [] (storyBody model) model.openedStory
+
+
+storyBody : Model -> OpenedStory -> List (Html a)
+storyBody { stories, currentTime } { id, comments } =
     let
-        defaultFn =
-            runWithDefault emptyStory (fullStory currentDate)
+        sb storyData =
+            [ div [ class "story-body" ]
+                [ div [ class "story-text", innerHtml storyData.text ] []
+                , Keyed.node "div" [ class "story-comments" ] <|
+                    Comment.view currentTime comments storyData
+                ]
+            ]
     in
-        div [ class "story" ] <|
-            Maybe.mapDefault emptyStory defaultFn mbStory
-
-
-emptyStory : List (Html a)
-emptyStory =
-    []
-
-
-fullStory : Date -> ItemData -> List (Html a)
-fullStory currentDate story =
-    [ div [ class "story-body" ]
-        [ div [ class "story-text", innerHtml story.text ] []
-        , Keyed.node "div" [ class "story-comments" ] <|
-            comments currentDate story.kids
-        ]
-    ]
+        Maybe.mapDefault [] sb (Dict.get id stories)

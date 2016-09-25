@@ -1,4 +1,16 @@
-module Model exposing (..)
+module Model
+    exposing
+        ( Model
+        , Page(..)
+        , StoryFilter(..)
+        , ItemData
+        , ItemDataDict
+        , ItemType(..)
+        , OpenedStory
+        , openedStoryFromId
+        , openedStoryFromItemData
+        , openedStoryFromPage
+        )
 
 -- vendor
 
@@ -6,13 +18,46 @@ import Dict exposing (Dict)
 import Date exposing (Date)
 
 
+type alias ItemDataDict =
+    Dict Int ItemData
+
+
 type alias Model =
     { filter : StoryFilter
-    , stories : List Item
-    , openedStory : Maybe Item
+    , storyIds : List Int
+    , stories : ItemDataDict
+    , openedStory : Maybe OpenedStory
     , currentTime : Date
     , page : Page
     }
+
+
+type alias OpenedStory =
+    { id : Int
+    , comments : ItemDataDict
+    }
+
+
+openedStoryFromId : Int -> OpenedStory
+openedStoryFromId id =
+    OpenedStory id Dict.empty
+
+
+openedStoryFromItemData : ItemData -> OpenedStory
+openedStoryFromItemData { id, kids } =
+    { id = id
+    , comments = Dict.empty
+    }
+
+
+openedStoryFromPage : Page -> Maybe OpenedStory
+openedStoryFromPage page =
+    case page of
+        StoryPage id ->
+            Just <| openedStoryFromId id
+
+        _ ->
+            Nothing
 
 
 type Page
@@ -28,11 +73,6 @@ type StoryFilter
     | BestStories
 
 
-type Item
-    = Lite Int
-    | Full ItemData
-
-
 type alias ItemData =
     { id : Int
     , deleted : Bool
@@ -40,12 +80,10 @@ type alias ItemData =
     , by : Maybe String
     , time : Int
     , text : String
-    , parent : Maybe Item
-    , kids : Dict Int ( Int, Item )
+    , kids : List Int
     , url : String
     , score : Int
     , title : String
-    , parts : Dict Int ( Int, Item )
     , descendants : Int
     }
 
@@ -57,53 +95,3 @@ type ItemType
     | Poll
     | Pollopt
     | Unknown
-
-
-isFull : Item -> Bool
-isFull item =
-    not (isLite item)
-
-
-isLite : Item -> Bool
-isLite item =
-    case item of
-        Lite _ ->
-            True
-
-        _ ->
-            False
-
-
-itemId : Item -> Int
-itemId a =
-    case a of
-        Lite id ->
-            id
-
-        Full data ->
-            data.id
-
-
-mapFull : Item -> (ItemData -> Item) -> Item
-mapFull item func =
-    runWithDefault item func item
-
-
-runWithDefault : a -> (ItemData -> a) -> Item -> a
-runWithDefault default func item =
-    case item of
-        Full data ->
-            func data
-
-        _ ->
-            default
-
-
-toMaybe : Item -> Maybe ItemData
-toMaybe item =
-    case item of
-        Full data ->
-            Just data
-
-        Lite _ ->
-            Nothing

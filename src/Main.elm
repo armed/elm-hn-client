@@ -15,7 +15,8 @@ import Result
 
 -- local
 
-import Model exposing (Model, StoryFilter(..), isFull, Page(..))
+import Dict
+import Model exposing (Model, StoryFilter(..), Page(..), openedStoryFromPage)
 import Views.Story as Story
 import Views.Header as Header
 import Views.StoryLink as StoryLink
@@ -48,18 +49,24 @@ main =
 init : Result String Page -> ( Model, Cmd Msg )
 init result =
     let
-        defaultFilter =
-            TopStories
-
         defaultDate =
             Date.fromTime 0
 
         initPage =
             Result.withDefault HomePage result
+
+        model =
+            { filter = TopStories
+            , storyIds = []
+            , stories = Dict.empty
+            , openedStory = openedStoryFromPage initPage
+            , currentTime = defaultDate
+            , page = initPage
+            }
     in
-        Model defaultFilter [] Nothing defaultDate initPage
+        model
             ! [ Task.perform UnexpectedError (Date.fromTime >> CurrentTime) Time.now
-              , Ports.getItemIds <| String.toLower <| toString defaultFilter
+              , Ports.getStoryIds <| String.toLower <| toString TopStories
               ]
 
 
@@ -70,24 +77,15 @@ init result =
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
-        [ Header.view model.openedStory
-        , Story.view model.openedStory model.currentTime
+        [ Header.view model
+        , Story.view model
         , storyLinks model
         ]
 
 
 storyLinks : Model -> Html Msg
-storyLinks { stories, openedStory, currentTime } =
-    let
-        storyLink story =
-            StoryLink.view story currentTime openedStory
-
-        storiesWithData =
-            List.filter isFull stories
-
-        links =
-            div [ class "links" ] <|
-                List.map storyLink storiesWithData
-    in
-        div [ class "story-list" ]
-            [ links ]
+storyLinks model =
+    div [ class "story-list" ]
+        [ div [ class "links" ] <|
+            List.map (StoryLink.view model) model.storyIds
+        ]

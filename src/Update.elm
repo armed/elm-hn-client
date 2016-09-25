@@ -2,18 +2,18 @@ module Update exposing (update, urlUpdate)
 
 -- vendor
 
-import Dict
 import Navigation
-import Maybe.Extra as Maybe
+import Dict exposing (Dict)
+import Maybe exposing (andThen, withDefault)
+import Maybe.Extra exposing (mapDefault)
 
 
 -- local
 
 import Msg exposing (..)
 import Model exposing (..)
-import Ports exposing (..)
 import Nav
-import Views.Comment as Comment
+import Ports
 
 
 -- update
@@ -22,34 +22,40 @@ import Views.Comment as Comment
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ItemIdsLoad list ->
+        StoryIdsLoaded list ->
             let
-                navCmd =
-                    case model.page of
-                        HomePage ->
-                            Cmd.none
-
-                        _ ->
-                            Navigation.newUrl <| Nav.toHash model.page
-
-                itemDataCmds =
-                    itemDataRequestCmds [] <| List.reverse list
+                itemDataRequests =
+                    List.reverse list
+                        |> List.map Ports.getStoryData
             in
-                { model | stories = List.map Lite list }
-                    ! (itemDataCmds ++ [ navCmd ])
+                { model | storyIds = list }
+                    ! itemDataRequests
 
-        ItemLoad pathIds item ->
-            if List.length pathIds > 1 then
-                Maybe.mapDefault
-                    ( model, Cmd.none )
-                    (updateOpenedStory model pathIds item)
-                    model.openedStory
-            else
-                updateStoryList model item
+        StoryDataLoaded id data ->
+            let
+                updatedModel =
+                    { model
+                        | stories = itemDictUpdater id data model.stories
+                    }
+            in
+                updatedModel ! storyCommentRequests updatedModel id
 
+        CommentDataLoaded id data ->
+            { model
+                | openedStory =
+                    Maybe.map
+                        (\os -> { os | comments = itemDictUpdater id data os.comments })
+                        model.openedStory
+            }
+                ! List.map Ports.getCommentData data.kids
+
+        -- TODO: handle someway
         UnexpectedError msg ->
-            -- will handle someday
-            ( model, Cmd.none )
+            let
+                _ =
+                    Debug.log "error" msg
+            in
+                ( model, Cmd.none )
 
         OpenStory id ->
             ( model, Navigation.newUrl <| Nav.toHash (StoryPage id) )
@@ -65,72 +71,23 @@ update msg model =
             model ! []
 
 
-updateOpenedStory : Model -> List Int -> Item -> Item -> ( Model, Cmd Msg )
-updateOpenedStory model pathIds newStory oldStory =
-    let
-        rootId =
-            Maybe.withDefault -1 (List.head pathIds)
-    in
-        if itemId oldStory == rootId then
-            let
-                ( updatedStory, idsToLoad ) =
-                    Comment.update oldStory newStory <| List.drop 1 pathIds
-            in
-                { model | openedStory = Just updatedStory }
-                    ! itemDataRequestCmds pathIds idsToLoad
-        else
-            model ! []
+itemDictUpdater : Int -> ItemData -> (ItemDataDict -> ItemDataDict)
+itemDictUpdater itemId itemData =
+    Dict.update itemId (\_ -> Just itemData)
 
 
-loadCommentsCmds : Maybe Item -> List (Cmd Msg)
-loadCommentsCmds mbStory =
-    let
-        cmdMaker data =
-            itemDataRequestCmds [ data.id ] <| Dict.keys data.kids
-    in
-        Maybe.mapDefault [] (runWithDefault [] cmdMaker) mbStory
-
-
-updateStoryList : Model -> Item -> ( Model, Cmd Msg )
-updateStoryList model updatedItem =
-    let
-        mapper oldItem =
-            if itemId oldItem == itemId updatedItem then
-                updatedItem
-            else
-                oldItem
-
-        firstTimeInit =
-            Maybe.mapDefault True isLite model.openedStory
-
-        mappedStory =
-            Maybe.map mapper model.openedStory
-
-        -- when app initialized with story url we should try to load story comments
-        ( updatedModel, cmds ) =
-            if firstTimeInit then
-                ( { model | openedStory = mappedStory }
-                , loadCommentsCmds mappedStory
-                )
-            else
-                ( model, [] )
-    in
-        { updatedModel | stories = List.map mapper model.stories }
-            ! cmds
-
-
-itemDataRequestCmds : List Int -> List Int -> List (Cmd Msg)
-itemDataRequestCmds pathIds list =
-    List.map (appendTo pathIds >> getItemData) list
-
-
-appendTo : List Int -> Int -> List Int
-appendTo pathIds i =
-    pathIds ++ [ i ]
-
-
-
--- urlUpdate
+storyCommentRequests : Model -> Int -> List (Cmd Msg)
+storyCommentRequests model storyId =
+    model.openedStory
+        `andThen`
+            (\{ id } ->
+                if id == storyId then
+                    Dict.get storyId model.stories
+                else
+                    Nothing
+            )
+        `andThen` (.kids >> List.map Ports.getCommentData >> Just)
+        |> withDefault []
 
 
 urlUpdate : Result String Page -> Model -> ( Model, Cmd Msg )
@@ -147,12 +104,11 @@ urlUpdate result model =
                 ! []
 
         Ok ((StoryPage id) as page) ->
-            List.filter (\s -> itemId s == id) model.stories
-                |> List.head
-                |> (\mbStory ->
-                        { model
-                            | openedStory = mbStory
-                            , page = page
-                        }
-                            ! (loadCommentsCmds mbStory)
-                   )
+            let
+                updatedModel =
+                    { model
+                        | page = page
+                        , openedStory = Just (openedStoryFromId id)
+                    }
+            in
+                updatedModel ! storyCommentRequests updatedModel id

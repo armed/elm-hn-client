@@ -8,21 +8,29 @@ var fireApp = firebase.initializeApp(config);
 var Elm = require('../Main');
 var app = Elm.Main.fullscreen();
 
-app.ports.getItemIds.subscribe(function (filter) {
+app.ports.getStoryIds.subscribe(function (filter) {
   fireApp
     .database()
     .ref('v0/' + filter)
     .limitToFirst(100)
-    .on('value', function (snapshot) {
-      app.ports.itemIds.send(snapshot.val());
+    .once('value', function (snapshot) {
+      app.ports.storyIds.send(snapshot.val());
     });
 });
 
-app.ports.getItemData.subscribe(function (itemIds) {
+function fireItemRequest(itemId, port) {
   fireApp
     .database()
-    .ref('v0/item/' + itemIds[itemIds.length - 1])
-    .on('value', function (snapshot) {
-      app.ports.itemData.send([itemIds, snapshot.val()]);
+    .ref('v0/item/' + itemId)
+    .once('value', function (snapshot) {
+      port.send([itemId, snapshot.val()]);
     });
-})
+}
+
+app.ports.getStoryData.subscribe(function (storyId) {
+  fireItemRequest(storyId, app.ports.storyData)
+});
+
+app.ports.getCommentData.subscribe(function (commentId) {
+  fireItemRequest(commentId, app.ports.commentData)
+});

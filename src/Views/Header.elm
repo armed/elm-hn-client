@@ -5,27 +5,30 @@ module Views.Header exposing (..)
 import Html exposing (Html, div, text, a, span, i)
 import Html.Attributes exposing (class, href, title, target)
 import Html.Events exposing (onClick)
-import Maybe.Extra as Maybe
+import Maybe.Extra exposing (mapDefault)
+import Maybe exposing (andThen, withDefault)
+import Dict
 
 
 -- local
 
 import Views.FaIcon exposing (faIcon)
+import Model exposing (Model, OpenedStory)
 import Msg exposing (Msg(CloseStory))
-import Model exposing (Item, runWithDefault)
 
 
-view : Maybe Item -> Html Msg
-view mbStory =
+view : Model -> Html Msg
+view { openedStory, stories } =
     let
-        defaultFn =
-            (,) True << runWithDefault "" .title
+        storyTitle : OpenedStory -> Maybe String
+        storyTitle { id } =
+            (Dict.get id stories)
+                `andThen` (.title >> Just)
 
         ( isStoryOpened, titleText ) =
-            Maybe.mapDefault
-                ( False, "" )
-                defaultFn
-                mbStory
+            openedStory
+                `andThen` storyTitle
+                |> mapDefault ( False, "" ) ((,) True)
 
         clz =
             if isStoryOpened then

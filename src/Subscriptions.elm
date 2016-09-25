@@ -10,10 +10,10 @@ import Date
 
 -- local
 
-import Model exposing (Model)
+import Model exposing (Model, ItemData)
 import Msg exposing (Msg(..))
 import Decode
-import Ports exposing (..)
+import Ports
 
 
 subscriptions : Model -> Sub Msg
@@ -29,28 +29,24 @@ subscriptions model =
             Time.second * 10
     in
         Sub.batch
-            [ itemIds parseItemListJson
-            , itemData parseItemDataJson
+            [ Ports.storyIds StoryIdsLoaded
+            , Ports.storyData (parseItemDataJson StoryDataLoaded)
+            , Ports.commentData (parseItemDataJson CommentDataLoaded)
             , Keyboard.ups handleEscKey
             , Time.every tenSeconds (Date.fromTime >> CurrentTime)
             ]
 
 
-parseItemListJson : List Int -> Msg
-parseItemListJson list =
-    ItemIdsLoad list
-
-
-parseItemDataJson : ( List Int, Json.Value ) -> Msg
-parseItemDataJson ( pathIds, json ) =
+parseItemDataJson : (Int -> ItemData -> Msg) -> ( Int, Json.Value ) -> Msg
+parseItemDataJson msgSender ( itemId, json ) =
     let
-        resultToMsg pathIds result =
+        resultToMsg result =
             case result of
                 Result.Ok item ->
-                    ItemLoad pathIds item
+                    msgSender itemId item
 
                 Result.Err msg ->
                     UnexpectedError msg
     in
-        Json.decodeValue Decode.item json
-            |> resultToMsg pathIds
+        Json.decodeValue Decode.itemData json
+            |> resultToMsg

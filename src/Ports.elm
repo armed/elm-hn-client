@@ -5,13 +5,19 @@ port module Ports exposing (..)
 import Json.Decode as Json
 
 
-port itemIds : (List Int -> msg) -> Sub msg
+port storyIds : (List Int -> msg) -> Sub msg
 
 
-port itemData : (( List Int, Json.Value ) -> msg) -> Sub msg
+port storyData : (( Int, Json.Value ) -> msg) -> Sub msg
 
 
-port getItemIds : String -> Cmd msg
+port commentData : (( Int, Json.Value ) -> msg) -> Sub msg
 
 
-port getItemData : List Int -> Cmd msg
+port getStoryIds : String -> Cmd msg
+
+
+port getStoryData : Int -> Cmd msg
+
+
+port getCommentData : Int -> Cmd msg

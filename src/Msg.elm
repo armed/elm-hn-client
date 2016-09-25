@@ -2,13 +2,14 @@ module Msg exposing (..)
 
 -- local
 
-import Model exposing (Item)
+import Model exposing (ItemData)
 import Date exposing (Date)
 
 
 type Msg
-    = ItemIdsLoad (List Int)
-    | ItemLoad (List Int) Item
+    = StoryIdsLoaded (List Int)
+    | StoryDataLoaded Int ItemData
+    | CommentDataLoaded Int ItemData
     | UnexpectedError String
     | OpenStory Int
     | CloseStory
