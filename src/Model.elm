@@ -8,7 +8,6 @@ module Model
         , ItemType(..)
         , OpenedStory
         , openedStoryFromId
-        , openedStoryFromItemData
         , openedStoryFromPage
         )
 
@@ -41,13 +40,6 @@ type alias OpenedStory =
 openedStoryFromId : Int -> OpenedStory
 openedStoryFromId id =
     OpenedStory id Dict.empty
-
-
-openedStoryFromItemData : ItemData -> OpenedStory
-openedStoryFromItemData { id, kids } =
-    { id = id
-    , comments = Dict.empty
-    }
 
 
 openedStoryFromPage : Page -> Maybe OpenedStory

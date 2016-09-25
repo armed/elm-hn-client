@@ -30,15 +30,15 @@ subscriptions model =
     in
         Sub.batch
             [ Ports.storyIds StoryIdsLoaded
-            , Ports.storyData (parseItemDataJson StoryDataLoaded)
-            , Ports.commentData (parseItemDataJson CommentDataLoaded)
+            , Ports.storyData (handleItemDataJson StoryDataLoaded)
+            , Ports.commentData (handleItemDataJson CommentDataLoaded)
             , Keyboard.ups handleEscKey
             , Time.every tenSeconds (Date.fromTime >> CurrentTime)
             ]
 
 
-parseItemDataJson : (Int -> ItemData -> Msg) -> ( Int, Json.Value ) -> Msg
-parseItemDataJson msgSender ( itemId, json ) =
+handleItemDataJson : (Int -> ItemData -> Msg) -> ( Int, Json.Value ) -> Msg
+handleItemDataJson msgSender ( itemId, json ) =
     let
         resultToMsg result =
             case result of
