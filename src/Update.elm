@@ -4,7 +4,7 @@ module Update exposing (update, urlUpdate)
 
 import Navigation
 import Dict exposing (Dict)
-import Maybe exposing (andThen, withDefault)
+import Maybe exposing (andThen)
 import Maybe.Extra exposing (mapDefault)
 
 
@@ -86,7 +86,7 @@ storyCommentRequests model storyId =
                 else
                     Nothing
             )
-        |> mapDefault [] (.kids >> List.map Ports.getCommentData)
+        |> mapDefault [] (.kids >> List.reverse >> List.map Ports.getCommentData)
 
 
 urlUpdate : Result String Page -> Model -> ( Model, Cmd Msg )
